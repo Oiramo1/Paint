@@ -128,6 +128,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Seeded 137 paints from Citadel, Vallejo, Army Painter, Scale75. CRUD operations working."
+      - working: true
+        agent: "main"
+        comment: "EXPANDED: Database now contains 945 paints! Brands include: Citadel (272), Vallejo Model Color (157), Army Painter (115+16 Speedpaint), Vallejo Game Color (97), Reaper (93), Pro Acryl (77), P3 (52), Scale75 (50). Files: extended_paints.py added with VALLEJO_MODEL_COLOR, VALLEJO_GAME_COLOR, ARMY_PAINTER_WARPAINTS, SCALE75_PAINTS, P3_FORMULA_PAINTS, REAPER_MASTER_SERIES, PRO_ACRYL_PAINTS arrays."
 
   - task: "User Paint Collection Management"
     implemented: true

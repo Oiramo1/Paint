@@ -546,3 +546,238 @@ P3_FORMULA_PAINTS = [
     {"brand": "P3", "name": "Quick Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
     {"brand": "P3", "name": "Pig Iron", "paint_type": "metallic", "hex_color": "#5A5A5A", "category": "Metallic", "is_custom": False},
 ]
+
+REAPER_MASTER_SERIES = [
+    # ========== REAPER MASTER SERIES (80+ paints) ==========
+    # Whites & Neutrals
+    {"brand": "Reaper", "name": "Pure White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "Reaper", "name": "Linen White", "paint_type": "base", "hex_color": "#FAF0E6", "category": "White", "is_custom": False},
+    {"brand": "Reaper", "name": "Leather White", "paint_type": "base", "hex_color": "#EDE6D6", "category": "White", "is_custom": False},
+    {"brand": "Reaper", "name": "Ghost White", "paint_type": "base", "hex_color": "#F8F8FF", "category": "White", "is_custom": False},
+    {"brand": "Reaper", "name": "Aged Bone", "paint_type": "base", "hex_color": "#E3D4B6", "category": "Bone", "is_custom": False},
+    {"brand": "Reaper", "name": "Creamy Ivory", "paint_type": "base", "hex_color": "#FFFDD0", "category": "Bone", "is_custom": False},
+    {"brand": "Reaper", "name": "Yellowed Bone", "paint_type": "base", "hex_color": "#D9C89E", "category": "Bone", "is_custom": False},
+    {"brand": "Reaper", "name": "Polished Bone", "paint_type": "base", "hex_color": "#E8DCC4", "category": "Bone", "is_custom": False},
+    
+    # Blacks & Greys  
+    {"brand": "Reaper", "name": "Pure Black", "paint_type": "base", "hex_color": "#000000", "category": "Black", "is_custom": False},
+    {"brand": "Reaper", "name": "Walnut Brown", "paint_type": "base", "hex_color": "#3D2B1F", "category": "Black", "is_custom": False},
+    {"brand": "Reaper", "name": "Shadowed Stone", "paint_type": "base", "hex_color": "#4A4A4A", "category": "Grey", "is_custom": False},
+    {"brand": "Reaper", "name": "Stone Grey", "paint_type": "base", "hex_color": "#7B7B7B", "category": "Grey", "is_custom": False},
+    {"brand": "Reaper", "name": "Cloudy Grey", "paint_type": "base", "hex_color": "#9C9C9C", "category": "Grey", "is_custom": False},
+    {"brand": "Reaper", "name": "Misty Grey", "paint_type": "base", "hex_color": "#B8B8B8", "category": "Grey", "is_custom": False},
+    {"brand": "Reaper", "name": "Rainy Grey", "paint_type": "base", "hex_color": "#6B7B8A", "category": "Grey", "is_custom": False},
+    {"brand": "Reaper", "name": "Twilight Blue", "paint_type": "base", "hex_color": "#4A5568", "category": "Grey", "is_custom": False},
+    
+    # Reds
+    {"brand": "Reaper", "name": "Blood Red", "paint_type": "base", "hex_color": "#8A0707", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Carnage Red", "paint_type": "base", "hex_color": "#C91F16", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Phoenix Red", "paint_type": "base", "hex_color": "#E32119", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Fire Red", "paint_type": "base", "hex_color": "#FF2A04", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Clotted Red", "paint_type": "base", "hex_color": "#6B1414", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Deep Red", "paint_type": "base", "hex_color": "#580C0C", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Crimson Red", "paint_type": "base", "hex_color": "#DC143C", "category": "Red", "is_custom": False},
+    {"brand": "Reaper", "name": "Burgundy Wine", "paint_type": "base", "hex_color": "#722F37", "category": "Red", "is_custom": False},
+    
+    # Oranges
+    {"brand": "Reaper", "name": "Fire Orange", "paint_type": "base", "hex_color": "#FF4500", "category": "Orange", "is_custom": False},
+    {"brand": "Reaper", "name": "Lava Orange", "paint_type": "base", "hex_color": "#FF6600", "category": "Orange", "is_custom": False},
+    {"brand": "Reaper", "name": "Bright Orange", "paint_type": "base", "hex_color": "#FF8C00", "category": "Orange", "is_custom": False},
+    {"brand": "Reaper", "name": "Harvest Orange", "paint_type": "base", "hex_color": "#DA9100", "category": "Orange", "is_custom": False},
+    
+    # Yellows
+    {"brand": "Reaper", "name": "Sun Yellow", "paint_type": "base", "hex_color": "#FFD700", "category": "Yellow", "is_custom": False},
+    {"brand": "Reaper", "name": "Candlelight Yellow", "paint_type": "base", "hex_color": "#FFDF00", "category": "Yellow", "is_custom": False},
+    {"brand": "Reaper", "name": "Pale Yellow", "paint_type": "base", "hex_color": "#FFFACD", "category": "Yellow", "is_custom": False},
+    {"brand": "Reaper", "name": "Golden Yellow", "paint_type": "base", "hex_color": "#FFC000", "category": "Yellow", "is_custom": False},
+    {"brand": "Reaper", "name": "Ochre Yellow", "paint_type": "base", "hex_color": "#CC7722", "category": "Yellow", "is_custom": False},
+    {"brand": "Reaper", "name": "Mustard Yellow", "paint_type": "base", "hex_color": "#FFDB58", "category": "Yellow", "is_custom": False},
+    
+    # Browns
+    {"brand": "Reaper", "name": "Leather Brown", "paint_type": "base", "hex_color": "#8B4513", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Burnt Sienna", "paint_type": "base", "hex_color": "#E97451", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Earth Brown", "paint_type": "base", "hex_color": "#5C4033", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Muddy Brown", "paint_type": "base", "hex_color": "#6B4423", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Chestnut Brown", "paint_type": "base", "hex_color": "#954535", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Rust Brown", "paint_type": "base", "hex_color": "#B7410E", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Dark Highlights", "paint_type": "base", "hex_color": "#614126", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Oiled Leather", "paint_type": "base", "hex_color": "#4A3728", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Golden Brown", "paint_type": "base", "hex_color": "#996515", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Woodstain Brown", "paint_type": "base", "hex_color": "#4A3728", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Nut Brown", "paint_type": "base", "hex_color": "#7B3F00", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Ruddy Leather", "paint_type": "base", "hex_color": "#B5651D", "category": "Brown", "is_custom": False},
+    {"brand": "Reaper", "name": "Tanned Leather", "paint_type": "base", "hex_color": "#D2691E", "category": "Brown", "is_custom": False},
+    
+    # Greens
+    {"brand": "Reaper", "name": "Viper Green", "paint_type": "base", "hex_color": "#00FF00", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Pale Green", "paint_type": "base", "hex_color": "#98FB98", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Forest Green", "paint_type": "base", "hex_color": "#228B22", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Pine Green", "paint_type": "base", "hex_color": "#01796F", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Jade Green", "paint_type": "base", "hex_color": "#00A86B", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Mint Green", "paint_type": "base", "hex_color": "#98FF98", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Pale Olive", "paint_type": "base", "hex_color": "#DAB785", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Olive Green", "paint_type": "base", "hex_color": "#808000", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Bright Green", "paint_type": "base", "hex_color": "#66FF00", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Goblin Green", "paint_type": "base", "hex_color": "#3D9140", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Vile Green", "paint_type": "base", "hex_color": "#6B8E23", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Brilliant Green", "paint_type": "base", "hex_color": "#4CBB17", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Peacock Green", "paint_type": "base", "hex_color": "#00A877", "category": "Green", "is_custom": False},
+    {"brand": "Reaper", "name": "Deep Ocean", "paint_type": "base", "hex_color": "#00688B", "category": "Green", "is_custom": False},
+    
+    # Blues
+    {"brand": "Reaper", "name": "Ultramarine Blue", "paint_type": "base", "hex_color": "#4166F5", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "True Blue", "paint_type": "base", "hex_color": "#0073CF", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Sky Blue", "paint_type": "base", "hex_color": "#87CEEB", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Brilliant Blue", "paint_type": "base", "hex_color": "#0066CC", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Breonne Blue", "paint_type": "base", "hex_color": "#1E90FF", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Marine Teal", "paint_type": "base", "hex_color": "#008B8B", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Sapphire Blue", "paint_type": "base", "hex_color": "#0F52BA", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Ritterlich Blue", "paint_type": "base", "hex_color": "#003366", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Midnight Blue", "paint_type": "base", "hex_color": "#191970", "category": "Blue", "is_custom": False},
+    {"brand": "Reaper", "name": "Imperial Blue", "paint_type": "base", "hex_color": "#002395", "category": "Blue", "is_custom": False},
+    
+    # Purples
+    {"brand": "Reaper", "name": "Deep Purple", "paint_type": "base", "hex_color": "#673147", "category": "Purple", "is_custom": False},
+    {"brand": "Reaper", "name": "Royal Purple", "paint_type": "base", "hex_color": "#7851A9", "category": "Purple", "is_custom": False},
+    {"brand": "Reaper", "name": "Amethyst Purple", "paint_type": "base", "hex_color": "#9966CC", "category": "Purple", "is_custom": False},
+    {"brand": "Reaper", "name": "Clear Purple", "paint_type": "base", "hex_color": "#8E4585", "category": "Purple", "is_custom": False},
+    {"brand": "Reaper", "name": "Violet Red", "paint_type": "base", "hex_color": "#C71585", "category": "Purple", "is_custom": False},
+    
+    # Pinks
+    {"brand": "Reaper", "name": "Pale Pink", "paint_type": "base", "hex_color": "#FADADD", "category": "Pink", "is_custom": False},
+    {"brand": "Reaper", "name": "Rose Pink", "paint_type": "base", "hex_color": "#FF66CC", "category": "Pink", "is_custom": False},
+    {"brand": "Reaper", "name": "Carnation Pink", "paint_type": "base", "hex_color": "#FFA6C9", "category": "Pink", "is_custom": False},
+    
+    # Flesh Tones
+    {"brand": "Reaper", "name": "Fair Skin", "paint_type": "base", "hex_color": "#F5DEB3", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Tanned Skin", "paint_type": "base", "hex_color": "#D2B48C", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Fair Highlight", "paint_type": "base", "hex_color": "#FFEFD5", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Rosy Skin", "paint_type": "base", "hex_color": "#FADADD", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Bronze Skin", "paint_type": "base", "hex_color": "#CD7F32", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Dark Skin", "paint_type": "base", "hex_color": "#8B4513", "category": "Flesh", "is_custom": False},
+    {"brand": "Reaper", "name": "Olive Skin", "paint_type": "base", "hex_color": "#9D8B70", "category": "Flesh", "is_custom": False},
+    
+    # Metallics
+    {"brand": "Reaper", "name": "True Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "Honed Steel", "paint_type": "metallic", "hex_color": "#8B8B8B", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "Blackened Steel", "paint_type": "metallic", "hex_color": "#4A4A4A", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "New Gold", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "Antique Gold", "paint_type": "metallic", "hex_color": "#CFB53B", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "Ancient Bronze", "paint_type": "metallic", "hex_color": "#8B4513", "category": "Metallic", "is_custom": False},
+    {"brand": "Reaper", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+]
+
+PRO_ACRYL_PAINTS = [
+    # ========== PRO ACRYL (Monument Hobbies - 60+ paints) ==========
+    # Whites & Neutrals
+    {"brand": "Pro Acryl", "name": "Bold Titanium White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Ivory", "paint_type": "base", "hex_color": "#FFFFF0", "category": "White", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Warm White", "paint_type": "base", "hex_color": "#F5F5DC", "category": "White", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Light Bone", "paint_type": "base", "hex_color": "#E3DAC9", "category": "Bone", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Bone", "paint_type": "base", "hex_color": "#C9B99A", "category": "Bone", "is_custom": False},
+    
+    # Blacks & Greys
+    {"brand": "Pro Acryl", "name": "Dark Ivory", "paint_type": "base", "hex_color": "#C2B280", "category": "Bone", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Coal Black", "paint_type": "base", "hex_color": "#0A0A0A", "category": "Black", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Warm Grey", "paint_type": "base", "hex_color": "#524E4D", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Neutral Grey", "paint_type": "base", "hex_color": "#4F4F4F", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Warm Grey", "paint_type": "base", "hex_color": "#808069", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Neutral Grey", "paint_type": "base", "hex_color": "#808080", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Light Warm Grey", "paint_type": "base", "hex_color": "#A9A9A4", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Light Neutral Grey", "paint_type": "base", "hex_color": "#A9A9A9", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Cool Grey", "paint_type": "base", "hex_color": "#4B5358", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Cool Grey", "paint_type": "base", "hex_color": "#708090", "category": "Grey", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Light Cool Grey", "paint_type": "base", "hex_color": "#9EA6A8", "category": "Grey", "is_custom": False},
+    
+    # Reds
+    {"brand": "Pro Acryl", "name": "Bold Pyrrole Red", "paint_type": "base", "hex_color": "#E31C23", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Burnt Red", "paint_type": "base", "hex_color": "#922B21", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Brick Red", "paint_type": "base", "hex_color": "#7B241C", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Brick Red", "paint_type": "base", "hex_color": "#A52A2A", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Maroon", "paint_type": "base", "hex_color": "#800000", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Carmine", "paint_type": "base", "hex_color": "#960018", "category": "Red", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Vermillion", "paint_type": "base", "hex_color": "#E34234", "category": "Red", "is_custom": False},
+    
+    # Oranges
+    {"brand": "Pro Acryl", "name": "Bold Orange", "paint_type": "base", "hex_color": "#FF6600", "category": "Orange", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Orange", "paint_type": "base", "hex_color": "#FFA500", "category": "Orange", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Burnt Orange", "paint_type": "base", "hex_color": "#CC5500", "category": "Orange", "is_custom": False},
+    
+    # Yellows
+    {"brand": "Pro Acryl", "name": "Bold Yellow", "paint_type": "base", "hex_color": "#FFEB3B", "category": "Yellow", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Golden Yellow", "paint_type": "base", "hex_color": "#FFD54F", "category": "Yellow", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Yellow Ochre", "paint_type": "base", "hex_color": "#C7923E", "category": "Yellow", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Yellow Ochre", "paint_type": "base", "hex_color": "#A67C00", "category": "Yellow", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Sand", "paint_type": "base", "hex_color": "#C2B280", "category": "Yellow", "is_custom": False},
+    
+    # Browns
+    {"brand": "Pro Acryl", "name": "Dark Brown", "paint_type": "base", "hex_color": "#3D2314", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Brown", "paint_type": "base", "hex_color": "#5C4033", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Chocolate Brown", "paint_type": "base", "hex_color": "#7B3F00", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Orange Brown", "paint_type": "base", "hex_color": "#B5651D", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Leather Brown", "paint_type": "base", "hex_color": "#8B4513", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Burnt Umber", "paint_type": "base", "hex_color": "#8A3324", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Raw Umber", "paint_type": "base", "hex_color": "#826644", "category": "Brown", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Mahogany", "paint_type": "base", "hex_color": "#C04000", "category": "Brown", "is_custom": False},
+    
+    # Greens
+    {"brand": "Pro Acryl", "name": "Dark Green", "paint_type": "base", "hex_color": "#013220", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Green", "paint_type": "base", "hex_color": "#228B22", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bright Green", "paint_type": "base", "hex_color": "#4CBB17", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Yellow Green", "paint_type": "base", "hex_color": "#9ACD32", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Jade Green", "paint_type": "base", "hex_color": "#00A86B", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Emerald Green", "paint_type": "base", "hex_color": "#50C878", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Forest Green", "paint_type": "base", "hex_color": "#228B22", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Olive Green", "paint_type": "base", "hex_color": "#556B2F", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Olive", "paint_type": "base", "hex_color": "#3D4D2E", "category": "Green", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Sap Green", "paint_type": "base", "hex_color": "#507D2A", "category": "Green", "is_custom": False},
+    
+    # Blues
+    {"brand": "Pro Acryl", "name": "Dark Blue", "paint_type": "base", "hex_color": "#00008B", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Blue", "paint_type": "base", "hex_color": "#0000FF", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bold Phthalo Blue", "paint_type": "base", "hex_color": "#000F89", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Ultramarine Blue", "paint_type": "base", "hex_color": "#4166F5", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Cobalt Blue", "paint_type": "base", "hex_color": "#0047AB", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Light Blue", "paint_type": "base", "hex_color": "#ADD8E6", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Sky Blue", "paint_type": "base", "hex_color": "#87CEEB", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Turquoise", "paint_type": "base", "hex_color": "#40E0D0", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Turquoise", "paint_type": "base", "hex_color": "#00CED1", "category": "Blue", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Navy Blue", "paint_type": "base", "hex_color": "#000080", "category": "Blue", "is_custom": False},
+    
+    # Purples
+    {"brand": "Pro Acryl", "name": "Dark Violet", "paint_type": "base", "hex_color": "#301934", "category": "Purple", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Violet", "paint_type": "base", "hex_color": "#7F00FF", "category": "Purple", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Purple", "paint_type": "base", "hex_color": "#800080", "category": "Purple", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bright Purple", "paint_type": "base", "hex_color": "#BF40BF", "category": "Purple", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bold Magenta", "paint_type": "base", "hex_color": "#FF0090", "category": "Purple", "is_custom": False},
+    
+    # Pinks  
+    {"brand": "Pro Acryl", "name": "Pink", "paint_type": "base", "hex_color": "#FFC0CB", "category": "Pink", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bright Pink", "paint_type": "base", "hex_color": "#FF69B4", "category": "Pink", "is_custom": False},
+    
+    # Flesh Tones
+    {"brand": "Pro Acryl", "name": "Light Flesh", "paint_type": "base", "hex_color": "#FFE4C4", "category": "Flesh", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Flesh", "paint_type": "base", "hex_color": "#E8BEAC", "category": "Flesh", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Flesh", "paint_type": "base", "hex_color": "#8D5524", "category": "Flesh", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Tan Flesh", "paint_type": "base", "hex_color": "#C68642", "category": "Flesh", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Rosy Flesh", "paint_type": "base", "hex_color": "#E3B9A1", "category": "Flesh", "is_custom": False},
+    
+    # Metallics
+    {"brand": "Pro Acryl", "name": "True Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Dark Silver", "paint_type": "metallic", "hex_color": "#808080", "category": "Metallic", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Rich Gold", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bright Gold", "paint_type": "metallic", "hex_color": "#FFB90F", "category": "Metallic", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Bronze", "paint_type": "metallic", "hex_color": "#CD7F32", "category": "Metallic", "is_custom": False},
+    {"brand": "Pro Acryl", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+]
+
+# Combined export for easy importing into server.py
+EXTENDED_PAINTS = (
+    VALLEJO_MODEL_COLOR +
+    VALLEJO_GAME_COLOR +
+    ARMY_PAINTER_WARPAINTS +
+    SCALE75_PAINTS +
+    P3_FORMULA_PAINTS +
+    REAPER_MASTER_SERIES +
+    PRO_ACRYL_PAINTS
+)

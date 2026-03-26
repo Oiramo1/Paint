@@ -1058,6 +1058,7 @@ async def recognize_paint(
 async def seed_paints(force: bool = False):
     """Seed the database with comprehensive miniature paints database"""
     from citadel_paints import CITADEL_EXTENDED_PAINTS
+    from extended_paints import EXTENDED_PAINTS
     
     # Check if already seeded
     count = await db.paints.count_documents({})
@@ -1227,6 +1228,9 @@ async def seed_paints(force: bool = False):
     
     # Add the extended Citadel paints (Dry, Technical, Contrast, Additional Layer/Base)
     paints_to_seed.extend(CITADEL_EXTENDED_PAINTS)
+    
+    # Add extended paints from other brands (Vallejo, Army Painter, Reaper, Pro Acryl, Scale75, P3)
+    paints_to_seed.extend(EXTENDED_PAINTS)
     
     await db.paints.insert_many(paints_to_seed)
     return {"message": f"Seeded {len(paints_to_seed)} paints successfully!", "seeded": True, "count": len(paints_to_seed)}
