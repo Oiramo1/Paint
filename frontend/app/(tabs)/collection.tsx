@@ -32,12 +32,15 @@ export default function CollectionTab() {
 
   const fetchCollection = async () => {
     try {
+      // Always try to fetch from API first when online
       if (isOnline) {
         const status = filter === 'all' ? undefined : filter;
         const res = await collectionAPI.getAll(status);
-        setCollection(res.data);
-        // Update cache via syncData
-        await syncData();
+        setCollection(res.data || []);
+        // Update cache
+        if (res.data) {
+          await syncData();
+        }
       } else {
         // Use cached data when offline
         let filtered = cachedCollection;
@@ -46,9 +49,12 @@ export default function CollectionTab() {
         }
         setCollection(filtered);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching collection:', error);
-      // Fall back to cache on error
+      // Fall back to cache on error, but show if it was an auth error
+      if (error.response?.status === 403) {
+        console.log('Auth error - user may need to re-login');
+      }
       let filtered = cachedCollection;
       if (filter !== 'all') {
         filtered = cachedCollection.filter(c => c.status === filter);

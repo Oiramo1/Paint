@@ -8,9 +8,12 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { FlashList } from '@shopify/flash-list';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { paintAPI, collectionAPI } from '../src/utils/api';
 import { Paint, UserPaint } from '../src/types';
 import { PaintCard } from '../src/components/PaintCard';
@@ -25,6 +28,10 @@ export default function PaintBrowser() {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [brands, setBrands] = useState<string[]>([]);
   const [types, setTypes] = useState<string[]>([]);
+  
+  // Modal states
+  const [brandModalVisible, setBrandModalVisible] = useState(false);
+  const [typeModalVisible, setTypeModalVisible] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -35,13 +42,13 @@ export default function PaintBrowser() {
 
       const [paintsRes, collectionRes, brandsRes, typesRes] = await Promise.all([
         paintAPI.getAll(params),
-        collectionAPI.getAll(),
+        collectionAPI.getAll().catch(() => ({ data: [] })),
         paintAPI.getBrands(),
         paintAPI.getTypes(),
       ]);
 
       setPaints(paintsRes.data);
-      setCollection(collectionRes.data);
+      setCollection(collectionRes.data || []);
       setBrands(brandsRes.data.brands || []);
       setTypes(typesRes.data.types || []);
     } catch (error) {
@@ -85,25 +92,84 @@ export default function PaintBrowser() {
     }
   };
 
-  const FilterChip = ({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) => (
-    <TouchableOpacity
-      style={[styles.chip, selected && styles.chipSelected]}
-      onPress={onPress}
+  const clearFilters = () => {
+    setSelectedBrand(null);
+    setSelectedType(null);
+    setSearch('');
+  };
+
+  // Selection Modal Component
+  const SelectionModal = ({ 
+    visible, 
+    onClose, 
+    title, 
+    options, 
+    selected, 
+    onSelect 
+  }: {
+    visible: boolean;
+    onClose: () => void;
+    title: string;
+    options: string[];
+    selected: string | null;
+    onSelect: (value: string | null) => void;
+  }) => (
+    <Modal
+      visible={visible}
+      animationType="slide"
+      transparent={true}
+      onRequestClose={onClose}
     >
-      <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{label}</Text>
-    </TouchableOpacity>
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>{title}</Text>
+            <TouchableOpacity onPress={onClose}>
+              <Ionicons name="close" size={24} color="#FFF" />
+            </TouchableOpacity>
+          </View>
+          
+          <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
+            <TouchableOpacity
+              style={[styles.modalOption, !selected && styles.modalOptionSelected]}
+              onPress={() => { onSelect(null); onClose(); }}
+            >
+              <Text style={[styles.modalOptionText, !selected && styles.modalOptionTextSelected]}>
+                All {title}
+              </Text>
+              {!selected && <Ionicons name="checkmark" size={20} color="#6366F1" />}
+            </TouchableOpacity>
+            
+            {options.map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[styles.modalOption, selected === option && styles.modalOptionSelected]}
+                onPress={() => { onSelect(option); onClose(); }}
+              >
+                <Text style={[styles.modalOptionText, selected === option && styles.modalOptionTextSelected]}>
+                  {option}
+                </Text>
+                {selected === option && <Ionicons name="checkmark" size={20} color="#6366F1" />}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
   );
 
   if (loading && paints.length === 0) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6366F1" />
+        <Text style={styles.loadingText}>Loading {brands.length > 0 ? `${brands.length} brands` : 'paints'}...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      {/* Search Bar */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
           <Ionicons name="search" size={20} color="#666" />
@@ -124,46 +190,46 @@ export default function PaintBrowser() {
         </View>
       </View>
 
-      <View style={styles.filtersContainer}>
-        <Text style={styles.filterLabel}>Brand:</Text>
-        <View style={styles.chipsRow}>
-          <FilterChip
-            label="All"
-            selected={!selectedBrand}
-            onPress={() => setSelectedBrand(null)}
-          />
-          {brands.slice(0, 5).map((brand) => (
-            <FilterChip
-              key={brand}
-              label={brand}
-              selected={selectedBrand === brand}
-              onPress={() => setSelectedBrand(brand)}
-            />
-          ))}
-        </View>
+      {/* Filter Dropdowns */}
+      <View style={styles.filterRow}>
+        <TouchableOpacity 
+          style={[styles.filterDropdown, selectedBrand && styles.filterDropdownActive]}
+          onPress={() => setBrandModalVisible(true)}
+        >
+          <Ionicons name="color-palette" size={16} color={selectedBrand ? "#6366F1" : "#999"} />
+          <Text style={[styles.filterDropdownText, selectedBrand && styles.filterDropdownTextActive]} numberOfLines={1}>
+            {selectedBrand || 'All Brands'}
+          </Text>
+          <Ionicons name="chevron-down" size={16} color={selectedBrand ? "#6366F1" : "#666"} />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.filterDropdown, selectedType && styles.filterDropdownActive]}
+          onPress={() => setTypeModalVisible(true)}
+        >
+          <Ionicons name="brush" size={16} color={selectedType ? "#6366F1" : "#999"} />
+          <Text style={[styles.filterDropdownText, selectedType && styles.filterDropdownTextActive]} numberOfLines={1}>
+            {selectedType || 'All Types'}
+          </Text>
+          <Ionicons name="chevron-down" size={16} color={selectedType ? "#6366F1" : "#666"} />
+        </TouchableOpacity>
+
+        {(selectedBrand || selectedType || search) && (
+          <TouchableOpacity style={styles.clearBtn} onPress={clearFilters}>
+            <Ionicons name="close" size={18} color="#EF4444" />
+          </TouchableOpacity>
+        )}
       </View>
 
-      <View style={styles.filtersContainer}>
-        <Text style={styles.filterLabel}>Type:</Text>
-        <View style={styles.chipsRow}>
-          <FilterChip
-            label="All"
-            selected={!selectedType}
-            onPress={() => setSelectedType(null)}
-          />
-          {types.slice(0, 6).map((type) => (
-            <FilterChip
-              key={type}
-              label={type}
-              selected={selectedType === type}
-              onPress={() => setSelectedType(type)}
-            />
-          ))}
-        </View>
+      {/* Results Count & Active Filters */}
+      <View style={styles.resultsRow}>
+        <Text style={styles.resultCount}>{paints.length} paints found</Text>
+        {brands.length > 0 && (
+          <Text style={styles.brandCount}>{brands.length} brands available</Text>
+        )}
       </View>
 
-      <Text style={styles.resultCount}>{paints.length} paints found</Text>
-
+      {/* Paint List */}
       <FlashList
         data={paints}
         keyExtractor={(item) => item.id}
@@ -190,7 +256,27 @@ export default function PaintBrowser() {
           </View>
         }
       />
-    </View>
+
+      {/* Brand Selection Modal */}
+      <SelectionModal
+        visible={brandModalVisible}
+        onClose={() => setBrandModalVisible(false)}
+        title="Brands"
+        options={brands}
+        selected={selectedBrand}
+        onSelect={setSelectedBrand}
+      />
+
+      {/* Type Selection Modal */}
+      <SelectionModal
+        visible={typeModalVisible}
+        onClose={() => setTypeModalVisible(false)}
+        title="Types"
+        options={types}
+        selected={selectedType}
+        onSelect={setSelectedType}
+      />
+    </SafeAreaView>
   );
 }
 
@@ -204,6 +290,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0F0F0F',
+  },
+  loadingText: {
+    color: '#666',
+    marginTop: 12,
+    fontSize: 14,
   },
   searchContainer: {
     padding: 16,
@@ -223,45 +314,65 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 8,
   },
-  filtersContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 4,
-  },
-  filterLabel: {
-    color: '#666',
-    fontSize: 12,
-    marginBottom: 6,
-  },
-  chipsRow: {
+  filterRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 6,
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+    gap: 8,
+    alignItems: 'center',
   },
-  chip: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
+  filterDropdown: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#1E1E1E',
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#2E2E2E',
   },
-  chipSelected: {
-    backgroundColor: '#6366F1',
+  filterDropdownActive: {
+    borderColor: '#6366F1',
+    backgroundColor: '#6366F115',
   },
-  chipText: {
+  filterDropdownText: {
+    flex: 1,
     color: '#999',
-    fontSize: 12,
-    textTransform: 'capitalize',
+    fontSize: 13,
   },
-  chipTextSelected: {
-    color: '#FFFFFF',
+  filterDropdownTextActive: {
+    color: '#6366F1',
+    fontWeight: '500',
   },
-  resultCount: {
-    color: '#666',
-    fontSize: 12,
+  clearBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#EF444420',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  resultsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 8,
   },
+  resultCount: {
+    color: '#999',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  brandCount: {
+    color: '#6366F1',
+    fontSize: 12,
+  },
   listContent: {
     padding: 16,
+    paddingTop: 8,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -277,5 +388,58 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 14,
     marginTop: 8,
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#1E1E1E',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2E2E2E',
+  },
+  modalTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  modalScroll: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  modalOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2E2E2E',
+  },
+  modalOptionSelected: {
+    backgroundColor: '#6366F115',
+    marginHorizontal: -8,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderBottomWidth: 0,
+  },
+  modalOptionText: {
+    color: '#CCC',
+    fontSize: 15,
+  },
+  modalOptionTextSelected: {
+    color: '#6366F1',
+    fontWeight: '600',
   },
 });

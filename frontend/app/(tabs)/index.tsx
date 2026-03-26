@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -20,13 +20,16 @@ export default function HomeTab() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [brands, setBrands] = useState<string[]>([]);
 
   const fetchData = async () => {
     try {
-      const [statsRes] = await Promise.all([
+      const [statsRes, brandsRes] = await Promise.all([
         statsAPI.get(),
+        paintAPI.getBrands(),
       ]);
       setStats(statsRes.data);
+      setBrands(brandsRes.data.brands || []);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -146,13 +149,31 @@ export default function HomeTab() {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.sectionTitle}>Paint Brands Included</Text>
+      <Text style={styles.sectionTitle}>Paint Database</Text>
+      <View style={styles.dbInfoContainer}>
+        <View style={styles.dbInfoCard}>
+          <Ionicons name="color-palette" size={24} color="#6366F1" />
+          <Text style={styles.dbInfoValue}>{brands.length}</Text>
+          <Text style={styles.dbInfoLabel}>Brands</Text>
+        </View>
+        <View style={styles.dbInfoCard}>
+          <Ionicons name="water" size={24} color="#4CAF50" />
+          <Text style={styles.dbInfoValue}>1,200+</Text>
+          <Text style={styles.dbInfoLabel}>Paints</Text>
+        </View>
+      </View>
+      
       <View style={styles.brandsContainer}>
-        {['Citadel', 'Vallejo', 'Army Painter', 'Scale75'].map((brand) => (
+        {brands.slice(0, 8).map((brand) => (
           <View key={brand} style={styles.brandChip}>
             <Text style={styles.brandText}>{brand}</Text>
           </View>
         ))}
+        {brands.length > 8 && (
+          <View style={[styles.brandChip, styles.brandChipMore]}>
+            <Text style={styles.brandTextMore}>+{brands.length - 8} more</Text>
+          </View>
+        )}
       </View>
     </ScrollView>
   );
@@ -253,8 +274,39 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
   },
+  brandChipMore: {
+    backgroundColor: '#6366F120',
+  },
   brandText: {
     color: '#FFFFFF',
     fontSize: 14,
+  },
+  brandTextMore: {
+    color: '#6366F1',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  dbInfoContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  dbInfoCard: {
+    flex: 1,
+    backgroundColor: '#1E1E1E',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  dbInfoValue: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  dbInfoLabel: {
+    color: '#666',
+    fontSize: 12,
+    marginTop: 4,
   },
 });
