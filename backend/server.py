@@ -1004,13 +1004,13 @@ async def recognize_paint(
             If you cannot identify the paint clearly, provide your best guess with a low confidence score."""
         ).with_model("openai", "gpt-4o")
         
-        # Create image content
+        # Create image content - use file_contents parameter as per Emergent integration API
         image_content = ImageContent(image_base64=request.image_base64)
         
-        # Create user message with image
+        # Create user message with image using file_contents (not image_contents)
         user_message = UserMessage(
             text="Please identify this miniature paint. Look at the label, bottle shape, and any visible text to determine the brand and color name.",
-            image_contents=[image_content]
+            file_contents=[image_content]
         )
         
         # Get response
