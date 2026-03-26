@@ -7,8 +7,8 @@ import {
   RefreshControl,
   ActivityIndicator,
   Alert,
+  FlatList,
 } from 'react-native';
-import { FlashList } from '@shopify/flash-list';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { collectionAPI } from '../../src/utils/api';
@@ -36,18 +36,21 @@ export default function CollectionTab() {
   const [lastSyncMessage, setLastSyncMessage] = useState<string | null>(null);
 
   const fetchCollection = async () => {
+    console.log('Fetching collection, isOnline:', isOnline);
     try {
-      // Always try to fetch from API first when online
       if (isOnline) {
         const status = filter === 'all' ? undefined : filter;
+        console.log('Making API call with status:', status);
         const res = await collectionAPI.getAll(status);
-        setCollection(res.data || []);
+        console.log('Collection API returned:', res.data?.length, 'items');
+        const data = res.data || [];
+        setCollection(data);
         // Update cache
-        if (res.data) {
+        if (data.length > 0) {
           await syncData();
         }
       } else {
-        // Use cached data when offline
+        console.log('Offline, using cached:', cachedCollection.length, 'items');
         let filtered = cachedCollection;
         if (filter !== 'all') {
           filtered = cachedCollection.filter(c => c.status === filter);
@@ -55,11 +58,11 @@ export default function CollectionTab() {
         setCollection(filtered);
       }
     } catch (error: any) {
-      console.error('Error fetching collection:', error);
-      // Fall back to cache on error, but show if it was an auth error
+      console.error('Error fetching collection:', error?.response?.status, error?.message);
       if (error.response?.status === 403) {
-        setLastSyncMessage('Auth error - try logging out and back in');
+        setLastSyncMessage('Session expired - please log out and back in');
       }
+      // Fall back to cache
       let filtered = cachedCollection;
       if (filter !== 'all') {
         filtered = cachedCollection.filter(c => c.status === filter);
@@ -73,15 +76,18 @@ export default function CollectionTab() {
 
   // Update collection when cached data changes
   useEffect(() => {
-    let filtered = cachedCollection;
-    if (filter !== 'all') {
-      filtered = cachedCollection.filter(c => c.status === filter);
+    if (!isOnline) {
+      let filtered = cachedCollection;
+      if (filter !== 'all') {
+        filtered = cachedCollection.filter(c => c.status === filter);
+      }
+      setCollection(filtered);
     }
-    setCollection(filtered);
-  }, [cachedCollection, filter]);
+  }, [cachedCollection, filter, isOnline]);
 
   useFocusEffect(
     useCallback(() => {
+      setLoading(true);
       fetchCollection();
     }, [filter, isOnline])
   );
@@ -112,11 +118,11 @@ export default function CollectionTab() {
 
       // Then force refresh from server
       const res = await collectionAPI.getAll();
-      setCollection(res.data || []);
+      const data = res.data || [];
+      setCollection(data);
       await syncData();
       
-      const count = res.data?.length || 0;
-      setLastSyncMessage(`Synced! ${count} paint${count !== 1 ? 's' : ''} in collection`);
+      setLastSyncMessage(`Synced! ${data.length} paint${data.length !== 1 ? 's' : ''} in collection`);
       
       // Clear message after 3 seconds
       setTimeout(() => setLastSyncMessage(null), 3000);
@@ -132,18 +138,28 @@ export default function CollectionTab() {
     }
   };
 
-  const handleRemove = async (item: UserPaint) => {
+  const handleRemove = (item: UserPaint) => {
     Alert.alert(
       'Remove Paint',
-      `Remove ${item.paint?.name} from your collection?`,
+      `Remove ${item.paint?.name || 'this paint'} from your collection?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Remove',
           style: 'destructive',
           onPress: async () => {
-            const success = await removeFromCollection(item.id);
-            if (!success && isOnline) {
+            try {
+              const success = await removeFromCollection(item.id);
+              if (success) {
+                // Remove from local state immediately
+                setCollection(prev => prev.filter(c => c.id !== item.id));
+                setLastSyncMessage('Paint removed');
+                setTimeout(() => setLastSyncMessage(null), 2000);
+              } else {
+                Alert.alert('Error', 'Failed to remove paint');
+              }
+            } catch (error) {
+              console.error('Remove error:', error);
               Alert.alert('Error', 'Failed to remove paint');
             }
           },
@@ -154,8 +170,20 @@ export default function CollectionTab() {
 
   const handleToggleStatus = async (item: UserPaint) => {
     const newStatus = item.status === 'owned' ? 'wishlist' : 'owned';
-    const success = await updateCollectionItem(item.id, { status: newStatus });
-    if (!success && isOnline) {
+    try {
+      const success = await updateCollectionItem(item.id, { status: newStatus });
+      if (success) {
+        // Update local state immediately
+        setCollection(prev => prev.map(c => 
+          c.id === item.id ? { ...c, status: newStatus } : c
+        ));
+        setLastSyncMessage(`Moved to ${newStatus}`);
+        setTimeout(() => setLastSyncMessage(null), 2000);
+      } else {
+        Alert.alert('Error', 'Failed to update paint status');
+      }
+    } catch (error) {
+      console.error('Toggle error:', error);
       Alert.alert('Error', 'Failed to update paint status');
     }
   };
@@ -164,6 +192,7 @@ export default function CollectionTab() {
     <TouchableOpacity
       style={[styles.filterBtn, filter === value && styles.filterBtnActive]}
       onPress={() => setFilter(value)}
+      activeOpacity={0.7}
     >
       <Text style={[styles.filterText, filter === value && styles.filterTextActive]}>
         {label}
@@ -171,10 +200,67 @@ export default function CollectionTab() {
     </TouchableOpacity>
   );
 
+  const renderItem = ({ item }: { item: UserPaint }) => (
+    <View style={styles.paintItemContainer}>
+      <TouchableOpacity
+        style={styles.paintItem}
+        onPress={() => handleToggleStatus(item)}
+        onLongPress={() => handleRemove(item)}
+        activeOpacity={0.7}
+        delayLongPress={500}
+      >
+        {item.paint && (
+          <PaintCard
+            paint={item.paint}
+            isOwned={item.status === 'owned'}
+            isInWishlist={item.status === 'wishlist'}
+            quantity={item.quantity}
+          />
+        )}
+      </TouchableOpacity>
+      
+      {/* Quick action buttons */}
+      <View style={styles.quickActions}>
+        <TouchableOpacity 
+          style={[styles.actionBtn, item.status === 'owned' ? styles.actionBtnActive : null]}
+          onPress={() => item.status !== 'owned' && handleToggleStatus(item)}
+          activeOpacity={0.7}
+        >
+          <Ionicons 
+            name={item.status === 'owned' ? 'checkmark-circle' : 'checkmark-circle-outline'} 
+            size={20} 
+            color={item.status === 'owned' ? '#4CAF50' : '#666'} 
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.actionBtn, item.status === 'wishlist' ? styles.actionBtnActive : null]}
+          onPress={() => item.status !== 'wishlist' && handleToggleStatus(item)}
+          activeOpacity={0.7}
+        >
+          <Ionicons 
+            name={item.status === 'wishlist' ? 'heart' : 'heart-outline'} 
+            size={20} 
+            color={item.status === 'wishlist' ? '#E91E63' : '#666'} 
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.actionBtn}
+          onPress={() => handleRemove(item)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="trash-outline" size={20} color="#EF4444" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
   if (loading && collection.length === 0) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6366F1" />
+        <Text style={styles.loadingText}>Loading collection...</Text>
       </View>
     );
   }
@@ -194,6 +280,7 @@ export default function CollectionTab() {
             style={[styles.syncBtn, (syncing || isSyncing) && styles.syncBtnDisabled]}
             onPress={handleForceSync}
             disabled={syncing || isSyncing}
+            activeOpacity={0.7}
           >
             {syncing || isSyncing ? (
               <ActivityIndicator size="small" color="#6366F1" />
@@ -209,6 +296,8 @@ export default function CollectionTab() {
               </View>
             )}
           </TouchableOpacity>
+          
+          <Text style={styles.countText}>{collection.length} paints</Text>
           
           {!isOnline && (
             <View style={styles.offlineChip}>
@@ -242,6 +331,7 @@ export default function CollectionTab() {
             style={styles.emptySyncBtn}
             onPress={handleForceSync}
             disabled={syncing || !isOnline}
+            activeOpacity={0.7}
           >
             <Ionicons name="sync" size={20} color="#FFF" />
             <Text style={styles.emptySyncBtnText}>
@@ -256,34 +346,15 @@ export default function CollectionTab() {
           )}
         </View>
       ) : (
-        <FlashList
+        <FlatList
           data={collection}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onLongPress={() => handleRemove(item)}
-              onPress={() => handleToggleStatus(item)}
-            >
-              {item.paint && (
-                <PaintCard
-                  paint={item.paint}
-                  isOwned={item.status === 'owned'}
-                  isInWishlist={item.status === 'wishlist'}
-                  quantity={item.quantity}
-                />
-              )}
-            </TouchableOpacity>
-          )}
-          estimatedItemSize={80}
+          renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#6366F1" />
           }
-          ListFooterComponent={
-            <Text style={styles.footerHint}>
-              Tap to toggle owned/wishlist • Long press to remove
-            </Text>
-          }
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       )}
     </View>
@@ -300,6 +371,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#0F0F0F',
+  },
+  loadingText: {
+    color: '#666',
+    marginTop: 12,
+    fontSize: 14,
   },
   headerContainer: {
     paddingTop: 8,
@@ -355,6 +431,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
+  countText: {
+    color: '#666',
+    fontSize: 13,
+  },
   pendingBadge: {
     backgroundColor: '#EF4444',
     borderRadius: 10,
@@ -377,6 +457,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 12,
     gap: 4,
+    marginLeft: 'auto',
   },
   offlineChipText: {
     color: '#EF4444',
@@ -404,11 +485,36 @@ const styles = StyleSheet.create({
   listContent: {
     padding: 16,
   },
-  footerHint: {
-    color: '#555',
-    fontSize: 12,
-    textAlign: 'center',
-    paddingVertical: 16,
+  separator: {
+    height: 12,
+  },
+  paintItemContainer: {
+    backgroundColor: '#1A1A1A',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  paintItem: {
+    // Let PaintCard handle its own styling
+  },
+  quickActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#2A2A2A',
+  },
+  actionBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#2A2A2A',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionBtnActive: {
+    backgroundColor: '#3A3A3A',
   },
   emptyContainer: {
     flex: 1,
