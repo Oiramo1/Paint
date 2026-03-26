@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
-  Alert,
   FlatList,
   Modal,
   TextInput,
@@ -138,28 +137,21 @@ export default function CollectionTab() {
 
   const handleDelete = async (item: UserPaint) => {
     const paintName = item.paint?.name || 'this paint';
-    Alert.alert(
-      'Remove Paint',
-      `Remove ${paintName} from your collection?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Remove',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await collectionAPI.remove(item.id);
-              setCollection(prev => prev.filter(c => c.id !== item.id));
-              setLastSyncMessage('Paint removed');
-              setTimeout(() => setLastSyncMessage(null), 2000);
-            } catch (error) {
-              console.error('Delete error:', error);
-              Alert.alert('Error', 'Failed to remove paint. Please try again.');
-            }
-          },
-        },
-      ]
-    );
+    console.log('Delete button pressed for item:', item.id, paintName);
+    
+    // Direct delete without confirmation for better UX
+    try {
+      console.log('Calling collectionAPI.remove with id:', item.id);
+      const response = await collectionAPI.remove(item.id);
+      console.log('Delete response:', response);
+      setCollection(prev => prev.filter(c => c.id !== item.id));
+      setLastSyncMessage('Paint removed!');
+      setTimeout(() => setLastSyncMessage(null), 2000);
+    } catch (error: any) {
+      console.error('Delete error:', error?.response?.data || error?.message || error);
+      setLastSyncMessage('Failed to remove paint');
+      setTimeout(() => setLastSyncMessage(null), 3000);
+    }
   };
 
   const handleToggleStatus = async (item: UserPaint, newStatus: 'owned' | 'wishlist') => {
@@ -174,7 +166,8 @@ export default function CollectionTab() {
       setTimeout(() => setLastSyncMessage(null), 2000);
     } catch (error) {
       console.error('Toggle error:', error);
-      Alert.alert('Error', 'Failed to update paint status');
+      setLastSyncMessage('Failed to update paint status');
+      setTimeout(() => setLastSyncMessage(null), 2000);
     }
   };
 
@@ -189,7 +182,8 @@ export default function CollectionTab() {
     
     const quantity = parseInt(quantityInput, 10);
     if (isNaN(quantity) || quantity < 1) {
-      Alert.alert('Invalid Quantity', 'Please enter a number greater than 0');
+      setLastSyncMessage('Please enter a number greater than 0');
+      setTimeout(() => setLastSyncMessage(null), 2000);
       return;
     }
 
@@ -203,7 +197,8 @@ export default function CollectionTab() {
       setTimeout(() => setLastSyncMessage(null), 2000);
     } catch (error) {
       console.error('Quantity update error:', error);
-      Alert.alert('Error', 'Failed to update quantity');
+      setLastSyncMessage('Failed to update quantity');
+      setTimeout(() => setLastSyncMessage(null), 2000);
     }
   };
 
