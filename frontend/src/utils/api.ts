@@ -69,6 +69,22 @@ export const recognitionAPI = {
   recognize: (image_base64: string) => api.post('/recognize-paint', { image_base64 }),
 };
 
+// Paint Equivalents API
+export const equivalentsAPI = {
+  getEquivalents: (paintId: string, limit: number = 10, sameType: boolean = false) =>
+    api.get(`/paints/${paintId}/equivalents`, { params: { limit, same_type: sameType } }),
+  getFromCollection: (paintId: string, limit: number = 5) =>
+    api.get(`/paints/${paintId}/equivalents-from-collection`, { params: { limit } }),
+};
+
+// Barcode API
+export const barcodeAPI = {
+  findByBarcode: (barcode: string) => api.get(`/barcode/${barcode}`),
+  linkBarcode: (barcode: string, paintId: string, notes?: string) =>
+    api.post('/barcode/link', { barcode, paint_id: paintId, notes }),
+  getAllLinks: (limit: number = 100) => api.get('/barcode/all-links', { params: { limit } }),
+};
+
 // Stats API
 export const statsAPI = {
   get: () => api.get('/stats'),

@@ -51,3 +51,26 @@ export interface Stats {
   wishlist_paints: number;
   active_projects: number;
 }
+
+export interface PaintEquivalent {
+  paint: Paint;
+  delta_e: number;
+  match_quality: 'exact' | 'very_close' | 'close' | 'similar' | 'different';
+  is_owned: boolean;
+}
+
+export interface EquivalentsResponse {
+  source_paint: Paint;
+  equivalents: PaintEquivalent[];
+  total_found?: number;
+  total_in_collection?: number;
+  message?: string;
+}
+
+export interface BarcodeResult {
+  found: boolean;
+  paint?: Paint;
+  barcode?: string;
+  linked_at?: string;
+  message?: string;
+}

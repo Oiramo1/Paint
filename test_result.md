@@ -165,6 +165,36 @@ backend:
         agent: "main"
         comment: "OpenAI GPT-4o vision integration for paint bottle recognition using Emergent LLM key"
 
+  - task: "Paint Equivalents API (Delta-E)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "NEW: Added Delta-E color matching APIs. GET /api/paints/{id}/equivalents and /api/paints/{id}/equivalents-from-collection"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Both equivalents APIs working correctly. Delta-E calculations accurate, results sorted by color distance, match quality labels correct (exact/very_close/close/similar/different). Collection-based equivalents properly filter to owned paints only. Response structure validated."
+
+  - task: "Barcode Scanning API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "NEW: Added barcode lookup and link APIs. GET /api/barcode/{code}, POST /api/barcode/link"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: All barcode APIs working correctly. Barcode lookup returns proper not-found/found responses. Link creation works with proper validation. Duplicate prevention working (returns 400 error). GET /api/barcode/all-links returns complete list. Fixed route ordering issue for proper endpoint resolution."
+
 frontend:
   - task: "Authentication Screens"
     implemented: true
@@ -226,17 +256,32 @@ frontend:
         agent: "main"
         comment: "Project list, create modal, project detail with paint management"
 
-  - task: "Paint Scanner"
+  - task: "Paint Scanner (Dual Mode)"
     implemented: true
-    working: true
+    working: "NA"
     file: "/app/frontend/app/scanner.tsx"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: true
         agent: "main"
-        comment: "Camera scanner with AI recognition, gallery picker, result display"
+        comment: "Original AI scanner working"
+      - working: "NA"
+        agent: "main"
+        comment: "UPDATED: Added dual-mode scanner - AI Vision tab and Barcode tab. Barcode scanning with crowdsourced linking feature."
+
+  - task: "Paint Equivalents Screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/paint-equivalents.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "NEW: Paint equivalents screen with toggle between 'From My Collection' and 'All Brands', shows Delta-E scores and match quality."
 
   - task: "Manual Paint Entry"
     implemented: true
@@ -265,12 +310,11 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Full flow testing"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -278,3 +322,7 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Initial MVP implementation complete. All backend APIs tested via curl. Frontend UI verified via screenshots. Authentication, paint database, collection management, projects, and AI scanning all implemented."
+  - agent: "main"
+    message: "FEATURE UPDATE: Implemented barcode scanning and paint equivalents features. Backend has new endpoints for Delta-E color matching and barcode linking. Frontend scanner now has dual mode (AI/Barcode). Please test the new backend APIs."
+  - agent: "testing"
+    message: "TESTING COMPLETE: Successfully tested both new backend API features. Paint Equivalents API working perfectly with accurate Delta-E color calculations, proper sorting, and correct match quality labels. Barcode APIs fully functional with lookup, linking, duplicate prevention, and listing capabilities. Fixed route ordering issue in backend. Both features ready for production use."

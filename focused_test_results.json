@@ -1,0 +1,51 @@
+[
+  {
+    "test": "Paint Equivalents (All Brands)",
+    "success": true,
+    "message": "Found 5 equivalents for Abaddon Black",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:34.508965"
+  },
+  {
+    "test": "Paint Equivalents (From Collection)",
+    "success": true,
+    "message": "Found 1 equivalents from collection",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:34.848890"
+  },
+  {
+    "test": "Barcode Lookup (Not Found)",
+    "success": true,
+    "message": "Correctly returned not found for barcode 999888777666555",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:35.287060"
+  },
+  {
+    "test": "Barcode Link Creation",
+    "success": true,
+    "message": "Successfully linked barcode 555666777888999 to paint Abaddon Black",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:35.575003"
+  },
+  {
+    "test": "Barcode Lookup (Found)",
+    "success": true,
+    "message": "Successfully found paint Abaddon Black for barcode 123456789012",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:35.789824"
+  },
+  {
+    "test": "Get All Barcode Links",
+    "success": true,
+    "message": "Retrieved 2 barcode links successfully",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:36.188411"
+  },
+  {
+    "test": "Duplicate Barcode Prevention",
+    "success": false,
+    "message": "Failed to prevent duplicate: Connection failed",
+    "details": null,
+    "timestamp": "2026-03-26T10:37:36.535893"
+  }
+]

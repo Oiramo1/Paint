@@ -14,6 +14,8 @@ import jwt
 import bcrypt
 from bson import ObjectId
 import base64
+import math
+import colorsys
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -143,6 +145,89 @@ class ManualPaintAdd(BaseModel):
     hex_color: str
     category: Optional[str] = None
     image_base64: Optional[str] = None
+
+# Barcode Mapping
+class BarcodeLink(BaseModel):
+    barcode: str
+    paint_id: str
+    notes: Optional[str] = None
+
+class BarcodeLinkResponse(BaseModel):
+    id: str
+    barcode: str
+    paint_id: str
+    paint: Optional[PaintResponse] = None
+    linked_by: str
+    created_at: datetime
+
+# Paint Equivalents
+class PaintEquivalent(BaseModel):
+    paint: PaintResponse
+    delta_e: float
+    match_quality: str  # "exact", "very_close", "close", "similar", "different"
+    is_owned: bool = False
+
+# ============== Color Utility Functions ==============
+
+def hex_to_rgb(hex_color: str) -> tuple:
+    """Convert hex color to RGB tuple"""
+    hex_color = hex_color.lstrip('#')
+    if len(hex_color) != 6:
+        return (128, 128, 128)  # Default gray for invalid colors
+    try:
+        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    except ValueError:
+        return (128, 128, 128)
+
+def rgb_to_lab(rgb: tuple) -> tuple:
+    """Convert RGB to CIE Lab color space for accurate color comparison"""
+    # First convert RGB to XYZ
+    r, g, b = [x / 255.0 for x in rgb]
+    
+    # Apply gamma correction
+    r = ((r + 0.055) / 1.055) ** 2.4 if r > 0.04045 else r / 12.92
+    g = ((g + 0.055) / 1.055) ** 2.4 if g > 0.04045 else g / 12.92
+    b = ((b + 0.055) / 1.055) ** 2.4 if b > 0.04045 else b / 12.92
+    
+    r, g, b = r * 100, g * 100, b * 100
+    
+    # RGB to XYZ conversion matrix
+    x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375
+    y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750
+    z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041
+    
+    # XYZ to Lab (D65 illuminant)
+    x /= 95.047
+    y /= 100.000
+    z /= 108.883
+    
+    x = x ** (1/3) if x > 0.008856 else (7.787 * x) + (16 / 116)
+    y = y ** (1/3) if y > 0.008856 else (7.787 * y) + (16 / 116)
+    z = z ** (1/3) if z > 0.008856 else (7.787 * z) + (16 / 116)
+    
+    L = (116 * y) - 16
+    a = 500 * (x - y)
+    b_val = 200 * (y - z)
+    
+    return (L, a, b_val)
+
+def calculate_delta_e(hex1: str, hex2: str) -> float:
+    """Calculate Delta-E (CIE76) color difference between two hex colors
+    Delta-E < 1: Not perceptible by human eye
+    Delta-E 1-2: Perceptible through close observation
+    Delta-E 2-10: Perceptible at a glance
+    Delta-E 11-49: Colors are more similar than opposite
+    Delta-E 100: Colors are exact opposite
+    """
+    lab1 = rgb_to_lab(hex_to_rgb(hex1))
+    lab2 = rgb_to_lab(hex_to_rgb(hex2))
+    
+    delta_e = math.sqrt(
+        (lab1[0] - lab2[0]) ** 2 +
+        (lab1[1] - lab2[1]) ** 2 +
+        (lab1[2] - lab2[2]) ** 2
+    )
+    return round(delta_e, 2)
 
 # ============== Auth Functions ==============
 
@@ -290,6 +375,231 @@ async def create_custom_paint(
     }
     result = await db.paints.insert_one(paint_doc)
     return PaintResponse(id=str(result.inserted_id), **{k: v for k, v in paint_doc.items() if k not in ["_id", "created_by", "image_base64"]})
+
+# ============== Paint Equivalents Endpoints ==============
+
+def get_match_quality(delta_e: float) -> str:
+    """Get human-readable match quality from Delta-E value"""
+    if delta_e < 1:
+        return "exact"
+    elif delta_e < 3:
+        return "very_close"
+    elif delta_e < 6:
+        return "close"
+    elif delta_e < 10:
+        return "similar"
+    else:
+        return "different"
+
+@api_router.get("/paints/{paint_id}/equivalents")
+async def get_paint_equivalents(
+    paint_id: str,
+    limit: int = 10,
+    same_type: bool = False,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get equivalent paints from all brands based on color similarity (Delta-E)"""
+    # Get the source paint
+    source_paint = await db.paints.find_one({"_id": ObjectId(paint_id)})
+    if not source_paint:
+        raise HTTPException(status_code=404, detail="Paint not found")
+    
+    source_hex = source_paint.get("hex_color", "#808080")
+    
+    # Get user's owned paints for marking
+    user_id = str(current_user["_id"])
+    user_paints = await db.user_paints.find({"user_id": user_id, "status": "owned"}).to_list(1000)
+    owned_paint_ids = {up["paint_id"] for up in user_paints}
+    
+    # Get all other paints
+    query = {"_id": {"$ne": ObjectId(paint_id)}}
+    if same_type:
+        query["paint_type"] = source_paint.get("paint_type")
+    
+    all_paints = await db.paints.find(query).to_list(1000)
+    
+    # Calculate Delta-E for each paint
+    equivalents = []
+    for paint in all_paints:
+        paint_hex = paint.get("hex_color", "#808080")
+        delta_e = calculate_delta_e(source_hex, paint_hex)
+        
+        # Only include reasonably similar paints (Delta-E < 25)
+        if delta_e < 25:
+            paint_response = PaintResponse(
+                id=str(paint["_id"]),
+                **{k: v for k, v in paint.items() if k != "_id"}
+            )
+            equivalents.append({
+                "paint": paint_response,
+                "delta_e": delta_e,
+                "match_quality": get_match_quality(delta_e),
+                "is_owned": str(paint["_id"]) in owned_paint_ids
+            })
+    
+    # Sort by Delta-E (closest matches first)
+    equivalents.sort(key=lambda x: x["delta_e"])
+    
+    return {
+        "source_paint": PaintResponse(
+            id=str(source_paint["_id"]),
+            **{k: v for k, v in source_paint.items() if k != "_id"}
+        ),
+        "equivalents": equivalents[:limit],
+        "total_found": len(equivalents)
+    }
+
+@api_router.get("/paints/{paint_id}/equivalents-from-collection")
+async def get_equivalents_from_collection(
+    paint_id: str,
+    limit: int = 5,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get equivalent paints only from user's owned collection"""
+    # Get the source paint
+    source_paint = await db.paints.find_one({"_id": ObjectId(paint_id)})
+    if not source_paint:
+        raise HTTPException(status_code=404, detail="Paint not found")
+    
+    source_hex = source_paint.get("hex_color", "#808080")
+    
+    # Get user's owned paints
+    user_id = str(current_user["_id"])
+    user_paints = await db.user_paints.find({"user_id": user_id, "status": "owned"}).to_list(1000)
+    
+    if not user_paints:
+        return {
+            "source_paint": PaintResponse(
+                id=str(source_paint["_id"]),
+                **{k: v for k, v in source_paint.items() if k != "_id"}
+            ),
+            "equivalents": [],
+            "message": "No owned paints in collection"
+        }
+    
+    # Get paint details for owned paints
+    equivalents = []
+    for up in user_paints:
+        if up["paint_id"] == paint_id:
+            continue  # Skip the source paint itself
+            
+        paint = await db.paints.find_one({"_id": ObjectId(up["paint_id"])})
+        if paint:
+            paint_hex = paint.get("hex_color", "#808080")
+            delta_e = calculate_delta_e(source_hex, paint_hex)
+            
+            paint_response = PaintResponse(
+                id=str(paint["_id"]),
+                **{k: v for k, v in paint.items() if k != "_id"}
+            )
+            equivalents.append({
+                "paint": paint_response,
+                "delta_e": delta_e,
+                "match_quality": get_match_quality(delta_e),
+                "is_owned": True
+            })
+    
+    # Sort by Delta-E
+    equivalents.sort(key=lambda x: x["delta_e"])
+    
+    return {
+        "source_paint": PaintResponse(
+            id=str(source_paint["_id"]),
+            **{k: v for k, v in source_paint.items() if k != "_id"}
+        ),
+        "equivalents": equivalents[:limit],
+        "total_in_collection": len(equivalents)
+    }
+
+# ============== Barcode Endpoints ==============
+
+@api_router.get("/barcode/all-links")
+async def get_all_barcode_links(limit: int = 100):
+    """Get all barcode-paint links (for reference)"""
+    links = await db.barcode_links.find().limit(limit).to_list(limit)
+    
+    result = []
+    for link in links:
+        paint = await db.paints.find_one({"_id": ObjectId(link["paint_id"])})
+        paint_response = None
+        if paint:
+            paint_response = PaintResponse(
+                id=str(paint["_id"]),
+                **{k: v for k, v in paint.items() if k != "_id"}
+            )
+        
+        result.append({
+            "id": str(link["_id"]),
+            "barcode": link["barcode"],
+            "paint": paint_response,
+            "created_at": link["created_at"]
+        })
+    
+    return {"links": result, "count": len(result)}
+
+@api_router.post("/barcode/link", response_model=BarcodeLinkResponse)
+async def link_barcode_to_paint(
+    data: BarcodeLink,
+    current_user: dict = Depends(get_current_user)
+):
+    """Link a barcode to a paint (crowdsourced mapping)"""
+    # Check if barcode already linked
+    existing = await db.barcode_links.find_one({"barcode": data.barcode})
+    if existing:
+        raise HTTPException(status_code=400, detail="Barcode already linked to a paint")
+    
+    # Check if paint exists
+    paint = await db.paints.find_one({"_id": ObjectId(data.paint_id)})
+    if not paint:
+        raise HTTPException(status_code=404, detail="Paint not found")
+    
+    # Create the link
+    link_doc = {
+        "barcode": data.barcode,
+        "paint_id": data.paint_id,
+        "notes": data.notes,
+        "linked_by": str(current_user["_id"]),
+        "created_at": datetime.utcnow()
+    }
+    result = await db.barcode_links.insert_one(link_doc)
+    
+    paint_response = PaintResponse(
+        id=str(paint["_id"]),
+        **{k: v for k, v in paint.items() if k != "_id"}
+    )
+    
+    return BarcodeLinkResponse(
+        id=str(result.inserted_id),
+        barcode=data.barcode,
+        paint_id=data.paint_id,
+        paint=paint_response,
+        linked_by=str(current_user["_id"]),
+        created_at=link_doc["created_at"]
+    )
+
+@api_router.get("/barcode/{barcode}")
+async def find_paint_by_barcode(barcode: str):
+    """Find a paint by its barcode (user-linked)"""
+    barcode_link = await db.barcode_links.find_one({"barcode": barcode})
+    
+    if not barcode_link:
+        return {"found": False, "message": "No paint linked to this barcode"}
+    
+    paint = await db.paints.find_one({"_id": ObjectId(barcode_link["paint_id"])})
+    if not paint:
+        return {"found": False, "message": "Linked paint no longer exists"}
+    
+    paint_response = PaintResponse(
+        id=str(paint["_id"]),
+        **{k: v for k, v in paint.items() if k != "_id"}
+    )
+    
+    return {
+        "found": True,
+        "paint": paint_response,
+        "barcode": barcode,
+        "linked_at": barcode_link["created_at"]
+    }
 
 # ============== User Paint Collection Endpoints ==============
 

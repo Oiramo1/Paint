@@ -1,0 +1,16 @@
+[
+  {
+    "test": "Health Check",
+    "success": true,
+    "message": "API is healthy: healthy",
+    "details": null,
+    "timestamp": "2026-03-26T10:36:12.579028"
+  },
+  {
+    "test": "User Registration",
+    "success": false,
+    "message": "Registration failed",
+    "details": "Connection failed",
+    "timestamp": "2026-03-26T10:36:12.742490"
+  }
+]

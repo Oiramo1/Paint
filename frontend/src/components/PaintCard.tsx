@@ -11,6 +11,7 @@ interface PaintCardProps {
   isInWishlist?: boolean;
   onAddToCollection?: () => void;
   onAddToWishlist?: () => void;
+  onViewEquivalents?: () => void;
   quantity?: number;
 }
 
@@ -22,6 +23,7 @@ export const PaintCard: React.FC<PaintCardProps> = ({
   isInWishlist = false,
   onAddToCollection,
   onAddToWishlist,
+  onViewEquivalents,
   quantity,
 }) => {
   const getPaintTypeColor = (type: string) => {
@@ -75,6 +77,11 @@ export const PaintCard: React.FC<PaintCardProps> = ({
       </View>
       {showActions && (
         <View style={styles.actions}>
+          {onViewEquivalents && (
+            <TouchableOpacity onPress={onViewEquivalents} style={styles.actionBtn}>
+              <Ionicons name="swap-horizontal" size={24} color="#6366F1" />
+            </TouchableOpacity>
+          )}
           {!isOwned && onAddToCollection && (
             <TouchableOpacity onPress={onAddToCollection} style={styles.actionBtn}>
               <Ionicons name="add-circle" size={24} color="#4CAF50" />
