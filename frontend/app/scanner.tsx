@@ -98,11 +98,38 @@ export default function Scanner() {
     setViewMode('result');
     try {
       const response = await recognitionAPI.recognize(base64);
+      console.log('Recognition response:', response.data);
       setAiResult(response.data);
+      
+      // Check if we got any useful result
+      if (!response.data?.recognized && !response.data?.matches?.length) {
+        // Show error message but stay on result screen
+        setAiResult({
+          recognized: {
+            brand: 'Unknown',
+            name: 'Could not identify',
+            paint_type: 'unknown',
+            hex_color: '#888888',
+            confidence: 0,
+            error: response.data?.error || response.data?.raw_response || 'AI could not identify the paint'
+          },
+          matches: []
+        });
+      }
     } catch (error: any) {
       console.error('Recognition error:', error);
-      Alert.alert('Error', error.response?.data?.detail || 'Failed to analyze image');
-      setViewMode('camera');
+      // Show error on result screen instead of going back to camera
+      setAiResult({
+        recognized: {
+          brand: 'Error',
+          name: 'Recognition Failed',
+          paint_type: 'unknown', 
+          hex_color: '#FF0000',
+          confidence: 0,
+          error: error.response?.data?.detail || error.message || 'Failed to analyze image'
+        },
+        matches: []
+      });
     } finally {
       setAnalyzing(false);
     }
