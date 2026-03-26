@@ -1055,16 +1055,21 @@ async def recognize_paint(
 # ============== Seed Paint Database ==============
 
 @api_router.post("/seed-paints")
-async def seed_paints():
-    """Seed the database with popular miniature paints"""
+async def seed_paints(force: bool = False):
+    """Seed the database with comprehensive miniature paints database"""
+    from citadel_paints import CITADEL_EXTENDED_PAINTS
     
     # Check if already seeded
     count = await db.paints.count_documents({})
-    if count > 0:
-        return {"message": f"Database already has {count} paints", "seeded": False}
+    if count > 0 and not force:
+        return {"message": f"Database already has {count} paints. Use force=true to reseed.", "seeded": False}
+    
+    # If force is true, delete existing paints first
+    if force and count > 0:
+        await db.paints.delete_many({})
     
     paints_to_seed = [
-        # Citadel Base Paints
+        # ========== CITADEL BASE PAINTS (Complete Range) ==========
         {"brand": "Citadel", "name": "Abaddon Black", "paint_type": "base", "hex_color": "#231F20", "category": "Black", "is_custom": False},
         {"brand": "Citadel", "name": "Averland Sunset", "paint_type": "base", "hex_color": "#FDB825", "category": "Yellow", "is_custom": False},
         {"brand": "Citadel", "name": "Balthasar Gold", "paint_type": "base", "hex_color": "#A47552", "category": "Metallic", "is_custom": False},
@@ -1220,8 +1225,11 @@ async def seed_paints():
         {"brand": "Scale75", "name": "Decayed Metal", "paint_type": "metallic", "hex_color": "#5D6D7E", "category": "Metallic", "is_custom": False},
     ]
     
+    # Add the extended Citadel paints (Dry, Technical, Contrast, Additional Layer/Base)
+    paints_to_seed.extend(CITADEL_EXTENDED_PAINTS)
+    
     await db.paints.insert_many(paints_to_seed)
-    return {"message": f"Seeded {len(paints_to_seed)} paints", "seeded": True}
+    return {"message": f"Seeded {len(paints_to_seed)} paints successfully!", "seeded": True, "count": len(paints_to_seed)}
 
 # ============== Stats Endpoint ==============
 
