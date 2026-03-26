@@ -771,6 +771,391 @@ PRO_ACRYL_PAINTS = [
     {"brand": "Pro Acryl", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
 ]
 
+TAMIYA_PAINTS = [
+    # ========== TAMIYA ACRYLIC & LACQUER (80+ paints) ==========
+    # Whites & Neutrals
+    {"brand": "Tamiya", "name": "Flat White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "Tamiya", "name": "Racing White", "paint_type": "base", "hex_color": "#F5F5F5", "category": "White", "is_custom": False},
+    {"brand": "Tamiya", "name": "White Pearl", "paint_type": "metallic", "hex_color": "#F0EAD6", "category": "White", "is_custom": False},
+    
+    # Blacks & Greys
+    {"brand": "Tamiya", "name": "Flat Black", "paint_type": "base", "hex_color": "#1A1A1A", "category": "Black", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss Black", "paint_type": "base", "hex_color": "#0A0A0A", "category": "Black", "is_custom": False},
+    {"brand": "Tamiya", "name": "Semi Gloss Black", "paint_type": "base", "hex_color": "#101010", "category": "Black", "is_custom": False},
+    {"brand": "Tamiya", "name": "Rubber Black", "paint_type": "base", "hex_color": "#1C1C1C", "category": "Black", "is_custom": False},
+    {"brand": "Tamiya", "name": "German Grey", "paint_type": "base", "hex_color": "#3D3D3D", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Grey", "paint_type": "base", "hex_color": "#4A4A4A", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Medium Grey", "paint_type": "base", "hex_color": "#6E6E6E", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Light Grey", "paint_type": "base", "hex_color": "#909090", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Sky Grey", "paint_type": "base", "hex_color": "#B0B0B0", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Neutral Grey", "paint_type": "base", "hex_color": "#808080", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Haze Grey", "paint_type": "base", "hex_color": "#7B8B8B", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "IJN Grey", "paint_type": "base", "hex_color": "#8B918B", "category": "Grey", "is_custom": False},
+    {"brand": "Tamiya", "name": "Deck Tan", "paint_type": "base", "hex_color": "#C8B896", "category": "Grey", "is_custom": False},
+    
+    # Reds
+    {"brand": "Tamiya", "name": "Flat Red", "paint_type": "base", "hex_color": "#C80000", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss Red", "paint_type": "base", "hex_color": "#FF0000", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Clear Red", "paint_type": "clear", "hex_color": "#FF2020", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Italian Red", "paint_type": "base", "hex_color": "#B81515", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Red Brown", "paint_type": "base", "hex_color": "#8B2500", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Hull Red", "paint_type": "base", "hex_color": "#5C1515", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Flat Rust", "paint_type": "base", "hex_color": "#B7410E", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Copper", "paint_type": "metallic", "hex_color": "#8B4513", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Wine Red", "paint_type": "base", "hex_color": "#722F37", "category": "Red", "is_custom": False},
+    {"brand": "Tamiya", "name": "Insignia Red", "paint_type": "base", "hex_color": "#AF002A", "category": "Red", "is_custom": False},
+    
+    # Oranges
+    {"brand": "Tamiya", "name": "Flat Orange", "paint_type": "base", "hex_color": "#FF6600", "category": "Orange", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss Orange", "paint_type": "base", "hex_color": "#FF8C00", "category": "Orange", "is_custom": False},
+    {"brand": "Tamiya", "name": "Clear Orange", "paint_type": "clear", "hex_color": "#FF9933", "category": "Orange", "is_custom": False},
+    {"brand": "Tamiya", "name": "Light Orange", "paint_type": "base", "hex_color": "#FFAA33", "category": "Orange", "is_custom": False},
+    
+    # Yellows
+    {"brand": "Tamiya", "name": "Flat Yellow", "paint_type": "base", "hex_color": "#FFD700", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss Yellow", "paint_type": "base", "hex_color": "#FFFF00", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Clear Yellow", "paint_type": "clear", "hex_color": "#FFEE33", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Lemon Yellow", "paint_type": "base", "hex_color": "#FFF44F", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Camel Yellow", "paint_type": "base", "hex_color": "#C19A6B", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Desert Yellow", "paint_type": "base", "hex_color": "#D2B48C", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Yellow", "paint_type": "base", "hex_color": "#C7A317", "category": "Yellow", "is_custom": False},
+    {"brand": "Tamiya", "name": "Chrome Yellow", "paint_type": "base", "hex_color": "#FFA700", "category": "Yellow", "is_custom": False},
+    
+    # Browns
+    {"brand": "Tamiya", "name": "Flat Brown", "paint_type": "base", "hex_color": "#5C4033", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Hull Red Brown", "paint_type": "base", "hex_color": "#4A2511", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Wooden Deck Tan", "paint_type": "base", "hex_color": "#D2B48C", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Buff", "paint_type": "base", "hex_color": "#C8AD7F", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Earth", "paint_type": "base", "hex_color": "#5A4D41", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Khaki", "paint_type": "base", "hex_color": "#C3B091", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Khaki Drab", "paint_type": "base", "hex_color": "#8F7357", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Flat Earth", "paint_type": "base", "hex_color": "#8B7355", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Tan", "paint_type": "base", "hex_color": "#D2B48C", "category": "Brown", "is_custom": False},
+    {"brand": "Tamiya", "name": "Field Grey", "paint_type": "base", "hex_color": "#6C6B5E", "category": "Brown", "is_custom": False},
+    
+    # Greens
+    {"brand": "Tamiya", "name": "Flat Green", "paint_type": "base", "hex_color": "#228B22", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Park Green", "paint_type": "base", "hex_color": "#2E8B57", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Deep Green", "paint_type": "base", "hex_color": "#006400", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Green", "paint_type": "base", "hex_color": "#023020", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Light Green", "paint_type": "base", "hex_color": "#90EE90", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "IJA Green", "paint_type": "base", "hex_color": "#566B4F", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Olive Drab", "paint_type": "base", "hex_color": "#6B8E23", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "Olive Green", "paint_type": "base", "hex_color": "#556B2F", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "NATO Green", "paint_type": "base", "hex_color": "#4D5D53", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "JGSDF Olive Drab", "paint_type": "base", "hex_color": "#5D5C4E", "category": "Green", "is_custom": False},
+    {"brand": "Tamiya", "name": "RAF Dark Green", "paint_type": "base", "hex_color": "#2E3E2E", "category": "Green", "is_custom": False},
+    
+    # Blues
+    {"brand": "Tamiya", "name": "Flat Blue", "paint_type": "base", "hex_color": "#0000CD", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gloss Blue", "paint_type": "base", "hex_color": "#0000FF", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Clear Blue", "paint_type": "clear", "hex_color": "#3366FF", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Royal Blue", "paint_type": "base", "hex_color": "#4169E1", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Sky Blue", "paint_type": "base", "hex_color": "#87CEEB", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Light Blue", "paint_type": "base", "hex_color": "#ADD8E6", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Insignia Blue", "paint_type": "base", "hex_color": "#3B5998", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Medium Blue", "paint_type": "base", "hex_color": "#0000CD", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Intermediate Blue", "paint_type": "base", "hex_color": "#4B9CD3", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Sea Blue", "paint_type": "base", "hex_color": "#006994", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "Dark Sea Blue", "paint_type": "base", "hex_color": "#003049", "category": "Blue", "is_custom": False},
+    {"brand": "Tamiya", "name": "IJN Grey Blue", "paint_type": "base", "hex_color": "#5D737E", "category": "Blue", "is_custom": False},
+    
+    # Purples
+    {"brand": "Tamiya", "name": "Flat Violet", "paint_type": "base", "hex_color": "#8B008B", "category": "Purple", "is_custom": False},
+    {"brand": "Tamiya", "name": "Purple", "paint_type": "base", "hex_color": "#800080", "category": "Purple", "is_custom": False},
+    
+    # Metallics
+    {"brand": "Tamiya", "name": "Chrome Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Flat Aluminum", "paint_type": "metallic", "hex_color": "#A8A8A8", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Titanium Silver", "paint_type": "metallic", "hex_color": "#B0B0B0", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gold Leaf", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Titanium Gold", "paint_type": "metallic", "hex_color": "#E5B80B", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Bronze", "paint_type": "metallic", "hex_color": "#CD7F32", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Gun Metal", "paint_type": "metallic", "hex_color": "#4A4A4A", "category": "Metallic", "is_custom": False},
+    {"brand": "Tamiya", "name": "Metallic Grey", "paint_type": "metallic", "hex_color": "#6E6E6E", "category": "Metallic", "is_custom": False},
+    
+    # Flesh
+    {"brand": "Tamiya", "name": "Flat Flesh", "paint_type": "base", "hex_color": "#E8BEAC", "category": "Flesh", "is_custom": False},
+    {"brand": "Tamiya", "name": "Pink", "paint_type": "base", "hex_color": "#FFC0CB", "category": "Pink", "is_custom": False},
+]
+
+AK_INTERACTIVE_PAINTS = [
+    # ========== AK INTERACTIVE 3RD GENERATION (90+ paints) ==========
+    # Whites & Neutrals
+    {"brand": "AK Interactive", "name": "White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Off White", "paint_type": "base", "hex_color": "#FAF0E6", "category": "White", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dirty White", "paint_type": "base", "hex_color": "#E8E4C9", "category": "White", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Ivory", "paint_type": "base", "hex_color": "#FFFFF0", "category": "White", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Cremeweiss", "paint_type": "base", "hex_color": "#FDF5E6", "category": "White", "is_custom": False},
+    
+    # Blacks & Greys
+    {"brand": "AK Interactive", "name": "Black", "paint_type": "base", "hex_color": "#000000", "category": "Black", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Rubber Black", "paint_type": "base", "hex_color": "#171717", "category": "Black", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Anthracite Grey", "paint_type": "base", "hex_color": "#383838", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Grey", "paint_type": "base", "hex_color": "#4A4A4A", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "German Grey", "paint_type": "base", "hex_color": "#4E5754", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Neutral Grey", "paint_type": "base", "hex_color": "#808080", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Medium Grey", "paint_type": "base", "hex_color": "#6E6E6E", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Light Grey", "paint_type": "base", "hex_color": "#A0A0A0", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Sky Grey", "paint_type": "base", "hex_color": "#B8B8B8", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Deck Grey", "paint_type": "base", "hex_color": "#8B9086", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Stone Grey", "paint_type": "base", "hex_color": "#9C9C9C", "category": "Grey", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Basalt Grey", "paint_type": "base", "hex_color": "#5B5B5B", "category": "Grey", "is_custom": False},
+    
+    # Reds
+    {"brand": "AK Interactive", "name": "Red", "paint_type": "base", "hex_color": "#FF0000", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Carmine", "paint_type": "base", "hex_color": "#960018", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Flat Red", "paint_type": "base", "hex_color": "#B22222", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Blood Red", "paint_type": "base", "hex_color": "#8A0707", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Rust", "paint_type": "base", "hex_color": "#7B3F00", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Light Rust", "paint_type": "base", "hex_color": "#B7410E", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Primer Red", "paint_type": "base", "hex_color": "#6D3129", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Oxide Red", "paint_type": "base", "hex_color": "#7E3517", "category": "Red", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Bordeaux Red", "paint_type": "base", "hex_color": "#5C0120", "category": "Red", "is_custom": False},
+    
+    # Oranges
+    {"brand": "AK Interactive", "name": "Orange", "paint_type": "base", "hex_color": "#FF6600", "category": "Orange", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Clear Orange", "paint_type": "clear", "hex_color": "#FF8C00", "category": "Orange", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Burnt Orange", "paint_type": "base", "hex_color": "#CC5500", "category": "Orange", "is_custom": False},
+    
+    # Yellows
+    {"brand": "AK Interactive", "name": "Yellow", "paint_type": "base", "hex_color": "#FFD700", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Lemon Yellow", "paint_type": "base", "hex_color": "#FFF44F", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Yellow", "paint_type": "base", "hex_color": "#C7A317", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Sand Yellow", "paint_type": "base", "hex_color": "#CEB180", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dunkelgelb", "paint_type": "base", "hex_color": "#A28B5B", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dunkelgelb Shadow", "paint_type": "base", "hex_color": "#8B7355", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dunkelgelb Light", "paint_type": "base", "hex_color": "#C4A970", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Desert Sand", "paint_type": "base", "hex_color": "#D5C4A1", "category": "Yellow", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Iraqi Sand", "paint_type": "base", "hex_color": "#C2B280", "category": "Yellow", "is_custom": False},
+    
+    # Browns
+    {"brand": "AK Interactive", "name": "Flat Brown", "paint_type": "base", "hex_color": "#5C4033", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Brown", "paint_type": "base", "hex_color": "#3D2314", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Leather Brown", "paint_type": "base", "hex_color": "#8B4513", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Buff", "paint_type": "base", "hex_color": "#C8AD7F", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Earth Brown", "paint_type": "base", "hex_color": "#6B4423", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Burnt Umber", "paint_type": "base", "hex_color": "#8A3324", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Tan", "paint_type": "base", "hex_color": "#D2B48C", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Khaki", "paint_type": "base", "hex_color": "#C3B091", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Afrika Korps Base", "paint_type": "base", "hex_color": "#B8A980", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Radish Brown", "paint_type": "base", "hex_color": "#4E3524", "category": "Brown", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Wooden Deck", "paint_type": "base", "hex_color": "#C19A6B", "category": "Brown", "is_custom": False},
+    
+    # Greens
+    {"brand": "AK Interactive", "name": "Olive Green", "paint_type": "base", "hex_color": "#556B2F", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Russian Green", "paint_type": "base", "hex_color": "#4A5D23", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "NATO Green", "paint_type": "base", "hex_color": "#4D5D53", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Olive Drab", "paint_type": "base", "hex_color": "#6B8E23", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Field Green", "paint_type": "base", "hex_color": "#5B7444", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Green", "paint_type": "base", "hex_color": "#013220", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Deep Green", "paint_type": "base", "hex_color": "#004225", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "IDF Green", "paint_type": "base", "hex_color": "#5B6840", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Bronze Green", "paint_type": "base", "hex_color": "#4A6341", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Light Green", "paint_type": "base", "hex_color": "#90EE90", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Zinc Chromate Green", "paint_type": "base", "hex_color": "#A4C639", "category": "Green", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Interior Green", "paint_type": "base", "hex_color": "#5E7D64", "category": "Green", "is_custom": False},
+    
+    # Blues
+    {"brand": "AK Interactive", "name": "Blue", "paint_type": "base", "hex_color": "#0000FF", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Dark Blue", "paint_type": "base", "hex_color": "#00008B", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Royal Blue", "paint_type": "base", "hex_color": "#4169E1", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Light Blue", "paint_type": "base", "hex_color": "#ADD8E6", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Sky Blue", "paint_type": "base", "hex_color": "#87CEEB", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Medium Blue", "paint_type": "base", "hex_color": "#0000CD", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Sea Blue", "paint_type": "base", "hex_color": "#006994", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "French Blue", "paint_type": "base", "hex_color": "#0072BB", "category": "Blue", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Prussian Blue", "paint_type": "base", "hex_color": "#003153", "category": "Blue", "is_custom": False},
+    
+    # Purples
+    {"brand": "AK Interactive", "name": "Purple", "paint_type": "base", "hex_color": "#800080", "category": "Purple", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Violet", "paint_type": "base", "hex_color": "#7F00FF", "category": "Purple", "is_custom": False},
+    
+    # Metallics
+    {"brand": "AK Interactive", "name": "Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Aluminium", "paint_type": "metallic", "hex_color": "#A8A8A8", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Gold", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Old Gold", "paint_type": "metallic", "hex_color": "#CFB53B", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Bronze", "paint_type": "metallic", "hex_color": "#CD7F32", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Steel", "paint_type": "metallic", "hex_color": "#71797E", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Gun Metal", "paint_type": "metallic", "hex_color": "#4A4A4A", "category": "Metallic", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Titanium", "paint_type": "metallic", "hex_color": "#B0B0B0", "category": "Metallic", "is_custom": False},
+    
+    # Flesh Tones
+    {"brand": "AK Interactive", "name": "Light Flesh", "paint_type": "base", "hex_color": "#FFE4C4", "category": "Flesh", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Flesh Base", "paint_type": "base", "hex_color": "#E8BEAC", "category": "Flesh", "is_custom": False},
+    {"brand": "AK Interactive", "name": "Flesh Shadow", "paint_type": "base", "hex_color": "#C68642", "category": "Flesh", "is_custom": False},
+]
+
+TURBO_DORK_PAINTS = [
+    # ========== TURBO DORK (Colorshift & Metallic Specialty - 50+ paints) ==========
+    # Colorshift Metallics
+    {"brand": "Turbo Dork", "name": "Absinthe", "paint_type": "colorshift", "hex_color": "#B2D8B2", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Afterburner", "paint_type": "colorshift", "hex_color": "#FF4500", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Aquamarine", "paint_type": "colorshift", "hex_color": "#7FFFD4", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Blue Raspberry", "paint_type": "colorshift", "hex_color": "#0066CC", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Bubblegum Crisis", "paint_type": "colorshift", "hex_color": "#FF69B4", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Celery", "paint_type": "colorshift", "hex_color": "#ACE1AF", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Dark Net", "paint_type": "colorshift", "hex_color": "#1A1A2E", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Electrum", "paint_type": "colorshift", "hex_color": "#E6BE8A", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Emerald Nightmare", "paint_type": "colorshift", "hex_color": "#046307", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Flamingo", "paint_type": "colorshift", "hex_color": "#FC8EAC", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Forest Twilight", "paint_type": "colorshift", "hex_color": "#2E4A2E", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Goblin Green", "paint_type": "colorshift", "hex_color": "#3D9140", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Golden Goose", "paint_type": "colorshift", "hex_color": "#FFD700", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Green Stuff", "paint_type": "colorshift", "hex_color": "#00A86B", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Hivemind", "paint_type": "colorshift", "hex_color": "#5D3F6A", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Lucky Duck", "paint_type": "colorshift", "hex_color": "#FDEE00", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Malum Malus", "paint_type": "colorshift", "hex_color": "#8B0000", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Mother Lode", "paint_type": "colorshift", "hex_color": "#B8860B", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Pearly Gates", "paint_type": "colorshift", "hex_color": "#F0EAD6", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Pink Nightmare", "paint_type": "colorshift", "hex_color": "#FF1493", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Purple Haze", "paint_type": "colorshift", "hex_color": "#9370DB", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Red Rum", "paint_type": "colorshift", "hex_color": "#7B001C", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Royal Blood", "paint_type": "colorshift", "hex_color": "#4B0082", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Sapphire", "paint_type": "colorshift", "hex_color": "#0F52BA", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Spicy Meatball", "paint_type": "colorshift", "hex_color": "#B7410E", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Super Natural", "paint_type": "colorshift", "hex_color": "#8FBC8F", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Swamp Thang", "paint_type": "colorshift", "hex_color": "#556B2F", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Twin Suns", "paint_type": "colorshift", "hex_color": "#FFA500", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Voltage", "paint_type": "colorshift", "hex_color": "#FFFF00", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Wavelength", "paint_type": "colorshift", "hex_color": "#00CED1", "category": "Colorshift", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "ZZ Top", "paint_type": "colorshift", "hex_color": "#0047AB", "category": "Colorshift", "is_custom": False},
+    
+    # Turbo Dork Metallics
+    {"brand": "Turbo Dork", "name": "Aluminum", "paint_type": "metallic", "hex_color": "#A8A8A8", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Brass Monkey", "paint_type": "metallic", "hex_color": "#B5A642", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Bronze Age", "paint_type": "metallic", "hex_color": "#CD7F32", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Chrome", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Copper Penny", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Gold Rush", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Gun Metal", "paint_type": "metallic", "hex_color": "#4A4A4A", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Iron Oxide", "paint_type": "metallic", "hex_color": "#7B3F00", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Lead Balloon", "paint_type": "metallic", "hex_color": "#3E3E3E", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Platinum", "paint_type": "metallic", "hex_color": "#E5E4E2", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Rose Gold", "paint_type": "metallic", "hex_color": "#B76E79", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Steel Wool", "paint_type": "metallic", "hex_color": "#71797E", "category": "Metallic", "is_custom": False},
+    {"brand": "Turbo Dork", "name": "Tin Star", "paint_type": "metallic", "hex_color": "#8B8B83", "category": "Metallic", "is_custom": False},
+]
+
+GREEN_STUFF_WORLD_PAINTS = [
+    # ========== GREEN STUFF WORLD (Chameleon, Colorshift, Metallics - 60+ paints) ==========
+    # Chameleon Colorshift
+    {"brand": "Green Stuff World", "name": "Cobalt Blue", "paint_type": "colorshift", "hex_color": "#0047AB", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Emerald Getaway", "paint_type": "colorshift", "hex_color": "#50C878", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fuchsia", "paint_type": "colorshift", "hex_color": "#FF00FF", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Green Chameleon", "paint_type": "colorshift", "hex_color": "#00A86B", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Mystic Purple", "paint_type": "colorshift", "hex_color": "#9B30FF", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Orange Chameleon", "paint_type": "colorshift", "hex_color": "#FF6600", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Pinky Blue", "paint_type": "colorshift", "hex_color": "#DA70D6", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Red Goblin", "paint_type": "colorshift", "hex_color": "#C41E3A", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Space Dust", "paint_type": "colorshift", "hex_color": "#2F4F4F", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Toxic Purple", "paint_type": "colorshift", "hex_color": "#800080", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Turquoise Sea", "paint_type": "colorshift", "hex_color": "#00CED1", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Violet Galaxy", "paint_type": "colorshift", "hex_color": "#7F00FF", "category": "Colorshift", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Yellow Chameleon", "paint_type": "colorshift", "hex_color": "#FFD700", "category": "Colorshift", "is_custom": False},
+    
+    # Metallic Paints
+    {"brand": "Green Stuff World", "name": "Antique Gold", "paint_type": "metallic", "hex_color": "#CFB53B", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Bright Gold", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Bronze", "paint_type": "metallic", "hex_color": "#CD7F32", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Chrome", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Copper", "paint_type": "metallic", "hex_color": "#B87333", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Dark Silver", "paint_type": "metallic", "hex_color": "#6E6E6E", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Gold", "paint_type": "metallic", "hex_color": "#FFD700", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Gun Metal", "paint_type": "metallic", "hex_color": "#4A4A4A", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Iron", "paint_type": "metallic", "hex_color": "#71797E", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Pale Gold", "paint_type": "metallic", "hex_color": "#E6BE8A", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Red Gold", "paint_type": "metallic", "hex_color": "#B8860B", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Rose Gold", "paint_type": "metallic", "hex_color": "#B76E79", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Silver", "paint_type": "metallic", "hex_color": "#C0C0C0", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Steel", "paint_type": "metallic", "hex_color": "#71797E", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Titanium", "paint_type": "metallic", "hex_color": "#B0B0B0", "category": "Metallic", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "White Gold", "paint_type": "metallic", "hex_color": "#F5F5DC", "category": "Metallic", "is_custom": False},
+    
+    # Fluorescent Paints
+    {"brand": "Green Stuff World", "name": "Fluor Blue", "paint_type": "fluorescent", "hex_color": "#00FFFF", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Green", "paint_type": "fluorescent", "hex_color": "#00FF00", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Magenta", "paint_type": "fluorescent", "hex_color": "#FF00FF", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Orange", "paint_type": "fluorescent", "hex_color": "#FF6600", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Pink", "paint_type": "fluorescent", "hex_color": "#FF69B4", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Red", "paint_type": "fluorescent", "hex_color": "#FF0000", "category": "Fluorescent", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Fluor Yellow", "paint_type": "fluorescent", "hex_color": "#FFFF00", "category": "Fluorescent", "is_custom": False},
+    
+    # Dipping Inks
+    {"brand": "Green Stuff World", "name": "Black Ink", "paint_type": "ink", "hex_color": "#000000", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Blue Ink", "paint_type": "ink", "hex_color": "#0000FF", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Brown Ink", "paint_type": "ink", "hex_color": "#5C4033", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Green Ink", "paint_type": "ink", "hex_color": "#228B22", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Purple Ink", "paint_type": "ink", "hex_color": "#800080", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Red Ink", "paint_type": "ink", "hex_color": "#FF0000", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Sepia Ink", "paint_type": "ink", "hex_color": "#8B7355", "category": "Ink", "is_custom": False},
+    {"brand": "Green Stuff World", "name": "Yellow Ink", "paint_type": "ink", "hex_color": "#FFD700", "category": "Ink", "is_custom": False},
+]
+
+KIMERA_KOLORS_PAINTS = [
+    # ========== KIMERA KOLORS (High-pigment Artist Paints - 40+ paints) ==========
+    # Pure Pigments
+    {"brand": "Kimera Kolors", "name": "Titanium White", "paint_type": "base", "hex_color": "#FFFFFF", "category": "White", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Ivory Black", "paint_type": "base", "hex_color": "#000000", "category": "Black", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Carbon Black", "paint_type": "base", "hex_color": "#1A1A1A", "category": "Black", "is_custom": False},
+    
+    # Reds
+    {"brand": "Kimera Kolors", "name": "Cadmium Red Light", "paint_type": "base", "hex_color": "#FF2400", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cadmium Red Medium", "paint_type": "base", "hex_color": "#E31B23", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cadmium Red Dark", "paint_type": "base", "hex_color": "#B22222", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Alizarin Crimson", "paint_type": "base", "hex_color": "#E32636", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Quinacridone Magenta", "paint_type": "base", "hex_color": "#9A114F", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Naphthol Red", "paint_type": "base", "hex_color": "#D92121", "category": "Red", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Pyrrole Red", "paint_type": "base", "hex_color": "#CB0A0A", "category": "Red", "is_custom": False},
+    
+    # Oranges
+    {"brand": "Kimera Kolors", "name": "Cadmium Orange", "paint_type": "base", "hex_color": "#ED872D", "category": "Orange", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Pyrrole Orange", "paint_type": "base", "hex_color": "#FF5500", "category": "Orange", "is_custom": False},
+    
+    # Yellows
+    {"brand": "Kimera Kolors", "name": "Cadmium Yellow Light", "paint_type": "base", "hex_color": "#FFF600", "category": "Yellow", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cadmium Yellow Medium", "paint_type": "base", "hex_color": "#FFD700", "category": "Yellow", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cadmium Yellow Deep", "paint_type": "base", "hex_color": "#FFB300", "category": "Yellow", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Yellow Ochre", "paint_type": "base", "hex_color": "#CC7722", "category": "Yellow", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Hansa Yellow", "paint_type": "base", "hex_color": "#FFFF00", "category": "Yellow", "is_custom": False},
+    
+    # Browns
+    {"brand": "Kimera Kolors", "name": "Burnt Sienna", "paint_type": "base", "hex_color": "#E97451", "category": "Brown", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Burnt Umber", "paint_type": "base", "hex_color": "#8A3324", "category": "Brown", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Raw Sienna", "paint_type": "base", "hex_color": "#D68A59", "category": "Brown", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Raw Umber", "paint_type": "base", "hex_color": "#826644", "category": "Brown", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Mars Brown", "paint_type": "base", "hex_color": "#6C4E31", "category": "Brown", "is_custom": False},
+    
+    # Greens
+    {"brand": "Kimera Kolors", "name": "Phthalo Green", "paint_type": "base", "hex_color": "#123524", "category": "Green", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Viridian", "paint_type": "base", "hex_color": "#40826D", "category": "Green", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Chromium Oxide Green", "paint_type": "base", "hex_color": "#4A7023", "category": "Green", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Sap Green", "paint_type": "base", "hex_color": "#507D2A", "category": "Green", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Hooker's Green", "paint_type": "base", "hex_color": "#49796B", "category": "Green", "is_custom": False},
+    
+    # Blues
+    {"brand": "Kimera Kolors", "name": "Phthalo Blue", "paint_type": "base", "hex_color": "#000F89", "category": "Blue", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Ultramarine Blue", "paint_type": "base", "hex_color": "#4166F5", "category": "Blue", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cobalt Blue", "paint_type": "base", "hex_color": "#0047AB", "category": "Blue", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Cerulean Blue", "paint_type": "base", "hex_color": "#2A52BE", "category": "Blue", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Prussian Blue", "paint_type": "base", "hex_color": "#003153", "category": "Blue", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Indanthrone Blue", "paint_type": "base", "hex_color": "#1A237E", "category": "Blue", "is_custom": False},
+    
+    # Purples & Violets
+    {"brand": "Kimera Kolors", "name": "Dioxazine Purple", "paint_type": "base", "hex_color": "#5C0A91", "category": "Purple", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Ultramarine Violet", "paint_type": "base", "hex_color": "#5C4084", "category": "Purple", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Quinacridone Violet", "paint_type": "base", "hex_color": "#6C3461", "category": "Purple", "is_custom": False},
+    
+    # Flesh Tones
+    {"brand": "Kimera Kolors", "name": "Flesh Ochre", "paint_type": "base", "hex_color": "#E3B888", "category": "Flesh", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Caucasian Flesh", "paint_type": "base", "hex_color": "#F5DEB3", "category": "Flesh", "is_custom": False},
+    {"brand": "Kimera Kolors", "name": "Warm Skin Tone", "paint_type": "base", "hex_color": "#D2B48C", "category": "Flesh", "is_custom": False},
+]
+
 # Combined export for easy importing into server.py
 EXTENDED_PAINTS = (
     VALLEJO_MODEL_COLOR +
@@ -779,5 +1164,10 @@ EXTENDED_PAINTS = (
     SCALE75_PAINTS +
     P3_FORMULA_PAINTS +
     REAPER_MASTER_SERIES +
-    PRO_ACRYL_PAINTS
+    PRO_ACRYL_PAINTS +
+    TAMIYA_PAINTS +
+    AK_INTERACTIVE_PAINTS +
+    TURBO_DORK_PAINTS +
+    GREEN_STUFF_WORLD_PAINTS +
+    KIMERA_KOLORS_PAINTS
 )

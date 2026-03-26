@@ -338,7 +338,7 @@ async def get_paints(
             {"brand": {"$regex": search, "$options": "i"}}
         ]
     
-    paints = await db.paints.find(query).to_list(1000)
+    paints = await db.paints.find(query).to_list(2000)
     return [PaintResponse(id=str(p["_id"]), **{k: v for k, v in p.items() if k != "_id"}) for p in paints]
 
 @api_router.get("/paints/brands")
