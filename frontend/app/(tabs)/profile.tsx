@@ -10,10 +10,20 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../src/store/authStore';
+import { useOfflineStore } from '../../src/store/offlineStore';
+import { offlineService } from '../../src/utils/offlineService';
 
 export default function ProfileTab() {
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const { 
+    isOnline, 
+    pendingActions, 
+    lastSyncTime, 
+    isSyncing,
+    syncData,
+    processOfflineQueue 
+  } = useOfflineStore();
 
   const handleLogout = () => {
     Alert.alert(
@@ -33,6 +43,51 @@ export default function ProfileTab() {
     );
   };
 
+  const handleSyncNow = async () => {
+    if (!isOnline) {
+      Alert.alert('Offline', 'Connect to internet to sync your data');
+      return;
+    }
+    
+    if (pendingActions > 0) {
+      const result = await processOfflineQueue();
+      Alert.alert('Sync Complete', `${result.success} changes synced, ${result.failed} failed`);
+    } else {
+      await syncData();
+      Alert.alert('Sync Complete', 'Your data is up to date');
+    }
+  };
+
+  const handleClearCache = () => {
+    Alert.alert(
+      'Clear Cache',
+      'This will clear locally stored data. Your data on the server will not be affected.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear',
+          style: 'destructive',
+          onPress: async () => {
+            await offlineService.clearAllCache();
+            Alert.alert('Cache Cleared', 'Local data has been cleared');
+          },
+        },
+      ]
+    );
+  };
+
+  const formatLastSync = () => {
+    if (!lastSyncTime) return 'Never';
+    const date = new Date(lastSyncTime);
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    
+    if (diff < 60000) return 'Just now';
+    if (diff < 3600000) return `${Math.floor(diff / 60000)} min ago`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)} hours ago`;
+    return date.toLocaleDateString();
+  };
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.profileHeader}>
@@ -41,6 +96,53 @@ export default function ProfileTab() {
         </View>
         <Text style={styles.userName}>{user?.display_name}</Text>
         <Text style={styles.userEmail}>{user?.email}</Text>
+      </View>
+
+      {/* Sync Status Card */}
+      <View style={styles.syncCard}>
+        <View style={styles.syncHeader}>
+          <View style={styles.syncStatus}>
+            <View style={[
+              styles.statusDot,
+              { backgroundColor: isOnline ? '#4CAF50' : '#EF4444' }
+            ]} />
+            <Text style={styles.syncStatusText}>
+              {isOnline ? 'Online' : 'Offline'}
+            </Text>
+          </View>
+          {isSyncing && (
+            <Text style={styles.syncingText}>Syncing...</Text>
+          )}
+        </View>
+        
+        <View style={styles.syncDetails}>
+          <View style={styles.syncRow}>
+            <Ionicons name="time-outline" size={16} color="#666" />
+            <Text style={styles.syncLabel}>Last synced:</Text>
+            <Text style={styles.syncValue}>{formatLastSync()}</Text>
+          </View>
+          
+          {pendingActions > 0 && (
+            <View style={styles.syncRow}>
+              <Ionicons name="cloud-upload-outline" size={16} color="#F59E0B" />
+              <Text style={styles.syncLabel}>Pending:</Text>
+              <Text style={[styles.syncValue, { color: '#F59E0B' }]}>
+                {pendingActions} change{pendingActions > 1 ? 's' : ''}
+              </Text>
+            </View>
+          )}
+        </View>
+
+        <TouchableOpacity 
+          style={[styles.syncBtn, !isOnline && styles.syncBtnDisabled]}
+          onPress={handleSyncNow}
+          disabled={!isOnline || isSyncing}
+        >
+          <Ionicons name="sync" size={18} color="#FFF" />
+          <Text style={styles.syncBtnText}>
+            {pendingActions > 0 ? 'Sync Pending Changes' : 'Sync Now'}
+          </Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.section}>
@@ -64,7 +166,7 @@ export default function ProfileTab() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Data</Text>
+        <Text style={styles.sectionTitle}>Data & Storage</Text>
         
         <TouchableOpacity style={styles.menuItem}>
           <View style={styles.menuLeft}>
@@ -78,6 +180,14 @@ export default function ProfileTab() {
           <View style={styles.menuLeft}>
             <Ionicons name="cloud-download-outline" size={22} color="#FF9800" />
             <Text style={styles.menuText}>Import Data</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={20} color="#666" />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.menuItem} onPress={handleClearCache}>
+          <View style={styles.menuLeft}>
+            <Ionicons name="trash-outline" size={22} color="#EF4444" />
+            <Text style={styles.menuText}>Clear Cache</Text>
           </View>
           <Ionicons name="chevron-forward" size={20} color="#666" />
         </TouchableOpacity>
@@ -109,7 +219,10 @@ export default function ProfileTab() {
       </TouchableOpacity>
 
       <Text style={styles.syncInfo}>
-        Your data syncs automatically across all your devices
+        {isOnline 
+          ? 'Your data syncs automatically across all your devices'
+          : 'Changes will sync when you reconnect to internet'
+        }
       </Text>
     </ScrollView>
   );
@@ -125,7 +238,7 @@ const styles = StyleSheet.create({
   },
   profileHeader: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 24,
   },
   avatarContainer: {
     width: 100,
@@ -145,6 +258,72 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 14,
     marginTop: 4,
+  },
+  syncCard: {
+    backgroundColor: '#1E1E1E',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 24,
+  },
+  syncHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  syncStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  syncStatusText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  syncingText: {
+    color: '#6366F1',
+    fontSize: 12,
+  },
+  syncDetails: {
+    gap: 8,
+    marginBottom: 16,
+  },
+  syncRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  syncLabel: {
+    color: '#666',
+    fontSize: 13,
+  },
+  syncValue: {
+    color: '#999',
+    fontSize: 13,
+    marginLeft: 'auto',
+  },
+  syncBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#6366F1',
+    padding: 12,
+    borderRadius: 8,
+  },
+  syncBtnDisabled: {
+    backgroundColor: '#333',
+  },
+  syncBtnText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   section: {
     marginBottom: 24,

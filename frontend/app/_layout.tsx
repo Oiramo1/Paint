@@ -3,13 +3,41 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { useAuthStore } from '../src/store/authStore';
+import { useOfflineStore } from '../src/store/offlineStore';
+import { offlineService } from '../src/utils/offlineService';
+import { OfflineBanner } from '../src/components/OfflineBanner';
 
 export default function RootLayout() {
-  const { loadAuth, isLoading } = useAuthStore();
+  const { loadAuth, isLoading, isAuthenticated } = useAuthStore();
+  const { setOnline, loadCachedData, syncData, processOfflineQueue } = useOfflineStore();
 
   useEffect(() => {
     loadAuth();
+    loadCachedData();
+
+    // Listen for network changes
+    const unsubscribe = offlineService.addNetworkListener(async (online) => {
+      setOnline(online);
+      if (online) {
+        // Process any pending offline actions first
+        await processOfflineQueue();
+        // Then sync fresh data
+        await syncData();
+      }
+    });
+
+    // Initial online check
+    offlineService.checkOnline().then(setOnline);
+
+    return () => unsubscribe();
   }, []);
+
+  // Sync data when user logs in
+  useEffect(() => {
+    if (isAuthenticated) {
+      syncData();
+    }
+  }, [isAuthenticated]);
 
   if (isLoading) {
     return (
@@ -22,6 +50,7 @@ export default function RootLayout() {
   return (
     <>
       <StatusBar style="light" />
+      <OfflineBanner />
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: '#0F0F0F' },

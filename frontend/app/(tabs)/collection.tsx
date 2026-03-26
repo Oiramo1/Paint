@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,10 +12,19 @@ import { FlashList } from '@shopify/flash-list';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { collectionAPI } from '../../src/utils/api';
+import { useOfflineStore } from '../../src/store/offlineStore';
 import { UserPaint } from '../../src/types';
 import { PaintCard } from '../../src/components/PaintCard';
 
 export default function CollectionTab() {
+  const { 
+    isOnline, 
+    cachedCollection, 
+    syncData,
+    removeFromCollection,
+    updateCollectionItem 
+  } = useOfflineStore();
+  
   const [collection, setCollection] = useState<UserPaint[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -23,21 +32,47 @@ export default function CollectionTab() {
 
   const fetchCollection = async () => {
     try {
-      const status = filter === 'all' ? undefined : filter;
-      const res = await collectionAPI.getAll(status);
-      setCollection(res.data);
+      if (isOnline) {
+        const status = filter === 'all' ? undefined : filter;
+        const res = await collectionAPI.getAll(status);
+        setCollection(res.data);
+        // Update cache via syncData
+        await syncData();
+      } else {
+        // Use cached data when offline
+        let filtered = cachedCollection;
+        if (filter !== 'all') {
+          filtered = cachedCollection.filter(c => c.status === filter);
+        }
+        setCollection(filtered);
+      }
     } catch (error) {
       console.error('Error fetching collection:', error);
+      // Fall back to cache on error
+      let filtered = cachedCollection;
+      if (filter !== 'all') {
+        filtered = cachedCollection.filter(c => c.status === filter);
+      }
+      setCollection(filtered);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
+  // Update collection when cached data changes
+  useEffect(() => {
+    let filtered = cachedCollection;
+    if (filter !== 'all') {
+      filtered = cachedCollection.filter(c => c.status === filter);
+    }
+    setCollection(filtered);
+  }, [cachedCollection, filter]);
+
   useFocusEffect(
     useCallback(() => {
       fetchCollection();
-    }, [filter])
+    }, [filter, isOnline])
   );
 
   const onRefresh = () => {
@@ -55,10 +90,8 @@ export default function CollectionTab() {
           text: 'Remove',
           style: 'destructive',
           onPress: async () => {
-            try {
-              await collectionAPI.remove(item.id);
-              fetchCollection();
-            } catch (error) {
+            const success = await removeFromCollection(item.id);
+            if (!success && isOnline) {
               Alert.alert('Error', 'Failed to remove paint');
             }
           },
@@ -68,11 +101,9 @@ export default function CollectionTab() {
   };
 
   const handleToggleStatus = async (item: UserPaint) => {
-    try {
-      const newStatus = item.status === 'owned' ? 'wishlist' : 'owned';
-      await collectionAPI.update(item.id, { status: newStatus });
-      fetchCollection();
-    } catch (error) {
+    const newStatus = item.status === 'owned' ? 'wishlist' : 'owned';
+    const success = await updateCollectionItem(item.id, { status: newStatus });
+    if (!success && isOnline) {
       Alert.alert('Error', 'Failed to update paint status');
     }
   };
@@ -88,7 +119,7 @@ export default function CollectionTab() {
     </TouchableOpacity>
   );
 
-  if (loading) {
+  if (loading && collection.length === 0) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6366F1" />
@@ -102,6 +133,11 @@ export default function CollectionTab() {
         <FilterButton value="all" label="All" />
         <FilterButton value="owned" label="Owned" />
         <FilterButton value="wishlist" label="Wishlist" />
+        {!isOnline && (
+          <View style={styles.offlineIndicator}>
+            <Ionicons name="cloud-offline" size={16} color="#EF4444" />
+          </View>
+        )}
       </View>
 
       {collection.length === 0 ? (
@@ -111,6 +147,11 @@ export default function CollectionTab() {
           <Text style={styles.emptyText}>
             Browse the paint database to add paints to your collection
           </Text>
+          {!isOnline && cachedCollection.length === 0 && (
+            <Text style={styles.offlineNote}>
+              Connect to internet to load your collection
+            </Text>
+          )}
         </View>
       ) : (
         <FlashList
@@ -157,6 +198,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 16,
     gap: 8,
+    alignItems: 'center',
   },
   filterBtn: {
     paddingHorizontal: 20,
@@ -174,6 +216,9 @@ const styles = StyleSheet.create({
   },
   filterTextActive: {
     color: '#FFFFFF',
+  },
+  offlineIndicator: {
+    marginLeft: 'auto',
   },
   listContent: {
     padding: 16,
@@ -195,5 +240,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     marginTop: 8,
+  },
+  offlineNote: {
+    color: '#EF4444',
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 16,
   },
 });

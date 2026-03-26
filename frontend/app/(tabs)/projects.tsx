@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,11 +14,20 @@ import { FlashList } from '@shopify/flash-list';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { projectAPI } from '../../src/utils/api';
+import { useOfflineStore } from '../../src/store/offlineStore';
 import { Project } from '../../src/types';
 import { ProjectCard } from '../../src/components/ProjectCard';
 
 export default function ProjectsTab() {
   const router = useRouter();
+  const { 
+    isOnline, 
+    cachedProjects, 
+    syncData,
+    createProject,
+    deleteProject: deleteProjectOffline 
+  } = useOfflineStore();
+  
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -29,20 +38,31 @@ export default function ProjectsTab() {
 
   const fetchProjects = async () => {
     try {
-      const res = await projectAPI.getAll();
-      setProjects(res.data);
+      if (isOnline) {
+        const res = await projectAPI.getAll();
+        setProjects(res.data);
+        await syncData();
+      } else {
+        setProjects(cachedProjects);
+      }
     } catch (error) {
       console.error('Error fetching projects:', error);
+      setProjects(cachedProjects);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
+  // Update projects when cached data changes
+  useEffect(() => {
+    setProjects(cachedProjects);
+  }, [cachedProjects]);
+
   useFocusEffect(
     useCallback(() => {
       fetchProjects();
-    }, [])
+    }, [isOnline])
   );
 
   const onRefresh = () => {
@@ -58,14 +78,22 @@ export default function ProjectsTab() {
 
     setCreating(true);
     try {
-      await projectAPI.create({
-        name: newProjectName.trim(),
-        description: newProjectDesc.trim() || undefined,
-      });
-      setShowModal(false);
-      setNewProjectName('');
-      setNewProjectDesc('');
-      fetchProjects();
+      const newProject = await createProject(
+        newProjectName.trim(),
+        newProjectDesc.trim() || undefined
+      );
+      
+      if (newProject) {
+        setShowModal(false);
+        setNewProjectName('');
+        setNewProjectDesc('');
+        
+        if (!isOnline) {
+          Alert.alert('Saved Offline', 'Project will sync when you\'re back online');
+        }
+      } else {
+        Alert.alert('Error', 'Failed to create project');
+      }
     } catch (error) {
       Alert.alert('Error', 'Failed to create project');
     } finally {
@@ -73,7 +101,7 @@ export default function ProjectsTab() {
     }
   };
 
-  if (loading) {
+  if (loading && projects.length === 0) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6366F1" />
@@ -90,6 +118,11 @@ export default function ProjectsTab() {
           <Text style={styles.emptyText}>
             Create a project to start tracking paints for your miniatures
           </Text>
+          {!isOnline && (
+            <Text style={styles.offlineNote}>
+              You can create projects offline - they'll sync later
+            </Text>
+          )}
           <TouchableOpacity
             style={styles.createBtn}
             onPress={() => setShowModal(true)}
@@ -100,6 +133,12 @@ export default function ProjectsTab() {
         </View>
       ) : (
         <>
+          {!isOnline && (
+            <View style={styles.offlineBanner}>
+              <Ionicons name="cloud-offline" size={16} color="#FFF" />
+              <Text style={styles.offlineBannerText}>Viewing cached projects</Text>
+            </View>
+          )}
           <FlashList
             data={projects}
             keyExtractor={(item) => item.id}
@@ -138,6 +177,13 @@ export default function ProjectsTab() {
                 <Ionicons name="close" size={24} color="#999" />
               </TouchableOpacity>
             </View>
+
+            {!isOnline && (
+              <View style={styles.offlineModalNote}>
+                <Ionicons name="cloud-offline" size={16} color="#F59E0B" />
+                <Text style={styles.offlineModalText}>Will sync when online</Text>
+              </View>
+            )}
 
             <TextInput
               style={styles.input}
@@ -208,6 +254,25 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 24,
   },
+  offlineNote: {
+    color: '#F59E0B',
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  offlineBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#F59E0B',
+    paddingVertical: 8,
+  },
+  offlineBannerText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: '500',
+  },
   createBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -259,6 +324,19 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 20,
     fontWeight: '600',
+  },
+  offlineModalNote: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: '#F59E0B20',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  offlineModalText: {
+    color: '#F59E0B',
+    fontSize: 12,
   },
   input: {
     backgroundColor: '#2A2A2A',
