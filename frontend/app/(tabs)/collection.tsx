@@ -8,21 +8,20 @@ import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Modal,
+  TextInput,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { collectionAPI } from '../../src/utils/api';
 import { useOfflineStore } from '../../src/store/offlineStore';
 import { UserPaint } from '../../src/types';
-import { PaintCard } from '../../src/components/PaintCard';
 
 export default function CollectionTab() {
   const { 
     isOnline, 
     cachedCollection, 
     syncData,
-    removeFromCollection,
-    updateCollectionItem,
     processOfflineQueue,
     pendingActions,
     isSyncing,
@@ -34,6 +33,11 @@ export default function CollectionTab() {
   const [filter, setFilter] = useState<'all' | 'owned' | 'wishlist'>('all');
   const [syncing, setSyncing] = useState(false);
   const [lastSyncMessage, setLastSyncMessage] = useState<string | null>(null);
+  
+  // Quantity modal state
+  const [quantityModalVisible, setQuantityModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<UserPaint | null>(null);
+  const [quantityInput, setQuantityInput] = useState('1');
 
   const fetchCollection = async () => {
     console.log('Fetching collection, isOnline:', isOnline);
@@ -43,9 +47,9 @@ export default function CollectionTab() {
         console.log('Making API call with status:', status);
         const res = await collectionAPI.getAll(status);
         console.log('Collection API returned:', res.data?.length, 'items');
+        console.log('Collection data:', JSON.stringify(res.data, null, 2));
         const data = res.data || [];
         setCollection(data);
-        // Update cache
         if (data.length > 0) {
           await syncData();
         }
@@ -62,7 +66,6 @@ export default function CollectionTab() {
       if (error.response?.status === 403) {
         setLastSyncMessage('Session expired - please log out and back in');
       }
-      // Fall back to cache
       let filtered = cachedCollection;
       if (filter !== 'all') {
         filtered = cachedCollection.filter(c => c.status === filter);
@@ -74,7 +77,6 @@ export default function CollectionTab() {
     }
   };
 
-  // Update collection when cached data changes
   useEffect(() => {
     if (!isOnline) {
       let filtered = cachedCollection;
@@ -108,7 +110,6 @@ export default function CollectionTab() {
     setLastSyncMessage(null);
 
     try {
-      // First, process any pending offline actions
       if (pendingActions > 0) {
         const result = await processOfflineQueue();
         if (result.failed > 0) {
@@ -116,15 +117,12 @@ export default function CollectionTab() {
         }
       }
 
-      // Then force refresh from server
       const res = await collectionAPI.getAll();
       const data = res.data || [];
       setCollection(data);
       await syncData();
       
       setLastSyncMessage(`Synced! ${data.length} paint${data.length !== 1 ? 's' : ''} in collection`);
-      
-      // Clear message after 3 seconds
       setTimeout(() => setLastSyncMessage(null), 3000);
     } catch (error: any) {
       console.error('Sync error:', error);
@@ -138,10 +136,11 @@ export default function CollectionTab() {
     }
   };
 
-  const handleRemove = (item: UserPaint) => {
+  const handleDelete = async (item: UserPaint) => {
+    const paintName = item.paint?.name || 'this paint';
     Alert.alert(
       'Remove Paint',
-      `Remove ${item.paint?.name || 'this paint'} from your collection?`,
+      `Remove ${paintName} from your collection?`,
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -149,18 +148,13 @@ export default function CollectionTab() {
           style: 'destructive',
           onPress: async () => {
             try {
-              const success = await removeFromCollection(item.id);
-              if (success) {
-                // Remove from local state immediately
-                setCollection(prev => prev.filter(c => c.id !== item.id));
-                setLastSyncMessage('Paint removed');
-                setTimeout(() => setLastSyncMessage(null), 2000);
-              } else {
-                Alert.alert('Error', 'Failed to remove paint');
-              }
+              await collectionAPI.remove(item.id);
+              setCollection(prev => prev.filter(c => c.id !== item.id));
+              setLastSyncMessage('Paint removed');
+              setTimeout(() => setLastSyncMessage(null), 2000);
             } catch (error) {
-              console.error('Remove error:', error);
-              Alert.alert('Error', 'Failed to remove paint');
+              console.error('Delete error:', error);
+              Alert.alert('Error', 'Failed to remove paint. Please try again.');
             }
           },
         },
@@ -168,23 +162,48 @@ export default function CollectionTab() {
     );
   };
 
-  const handleToggleStatus = async (item: UserPaint) => {
-    const newStatus = item.status === 'owned' ? 'wishlist' : 'owned';
+  const handleToggleStatus = async (item: UserPaint, newStatus: 'owned' | 'wishlist') => {
+    if (item.status === newStatus) return;
+    
     try {
-      const success = await updateCollectionItem(item.id, { status: newStatus });
-      if (success) {
-        // Update local state immediately
-        setCollection(prev => prev.map(c => 
-          c.id === item.id ? { ...c, status: newStatus } : c
-        ));
-        setLastSyncMessage(`Moved to ${newStatus}`);
-        setTimeout(() => setLastSyncMessage(null), 2000);
-      } else {
-        Alert.alert('Error', 'Failed to update paint status');
-      }
+      await collectionAPI.update(item.id, { status: newStatus });
+      setCollection(prev => prev.map(c => 
+        c.id === item.id ? { ...c, status: newStatus } : c
+      ));
+      setLastSyncMessage(`Moved to ${newStatus}`);
+      setTimeout(() => setLastSyncMessage(null), 2000);
     } catch (error) {
       console.error('Toggle error:', error);
       Alert.alert('Error', 'Failed to update paint status');
+    }
+  };
+
+  const openQuantityModal = (item: UserPaint) => {
+    setSelectedItem(item);
+    setQuantityInput(String(item.quantity || 1));
+    setQuantityModalVisible(true);
+  };
+
+  const handleUpdateQuantity = async () => {
+    if (!selectedItem) return;
+    
+    const quantity = parseInt(quantityInput, 10);
+    if (isNaN(quantity) || quantity < 1) {
+      Alert.alert('Invalid Quantity', 'Please enter a number greater than 0');
+      return;
+    }
+
+    try {
+      await collectionAPI.update(selectedItem.id, { quantity });
+      setCollection(prev => prev.map(c => 
+        c.id === selectedItem.id ? { ...c, quantity } : c
+      ));
+      setQuantityModalVisible(false);
+      setLastSyncMessage(`Quantity updated to ${quantity}`);
+      setTimeout(() => setLastSyncMessage(null), 2000);
+    } catch (error) {
+      console.error('Quantity update error:', error);
+      Alert.alert('Error', 'Failed to update quantity');
     }
   };
 
@@ -200,61 +219,133 @@ export default function CollectionTab() {
     </TouchableOpacity>
   );
 
-  const renderItem = ({ item }: { item: UserPaint }) => (
-    <View style={styles.paintItemContainer}>
-      <TouchableOpacity
-        style={styles.paintItem}
-        onPress={() => handleToggleStatus(item)}
-        onLongPress={() => handleRemove(item)}
-        activeOpacity={0.7}
-        delayLongPress={500}
-      >
-        {item.paint && (
-          <PaintCard
-            paint={item.paint}
-            isOwned={item.status === 'owned'}
-            isInWishlist={item.status === 'wishlist'}
-            quantity={item.quantity}
-          />
-        )}
-      </TouchableOpacity>
-      
-      {/* Quick action buttons */}
-      <View style={styles.quickActions}>
+  const renderItem = ({ item }: { item: UserPaint }) => {
+    const paint = item.paint;
+    
+    // If no paint data, show placeholder
+    if (!paint) {
+      return (
+        <View style={styles.paintCard}>
+          <View style={styles.paintInfo}>
+            <View style={[styles.colorSwatch, { backgroundColor: '#333' }]} />
+            <View style={styles.paintDetails}>
+              <Text style={styles.paintName}>Unknown Paint</Text>
+              <Text style={styles.paintBrand}>Paint data unavailable</Text>
+            </View>
+          </View>
+          <View style={styles.quickActions}>
+            <TouchableOpacity 
+              style={styles.deleteBtn}
+              onPress={() => handleDelete(item)}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="trash" size={20} color="#EF4444" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.paintCard}>
+        {/* Paint Info Row */}
         <TouchableOpacity 
-          style={[styles.actionBtn, item.status === 'owned' ? styles.actionBtnActive : null]}
-          onPress={() => item.status !== 'owned' && handleToggleStatus(item)}
+          style={styles.paintInfo}
+          onPress={() => openQuantityModal(item)}
           activeOpacity={0.7}
         >
-          <Ionicons 
-            name={item.status === 'owned' ? 'checkmark-circle' : 'checkmark-circle-outline'} 
-            size={20} 
-            color={item.status === 'owned' ? '#4CAF50' : '#666'} 
-          />
+          <View style={[styles.colorSwatch, { backgroundColor: paint.hex_color || '#808080' }]}>
+            {paint.hex_color?.toLowerCase() === '#ffffff' && (
+              <View style={styles.whiteSwatchBorder} />
+            )}
+          </View>
+          <View style={styles.paintDetails}>
+            <Text style={styles.paintName} numberOfLines={1}>{paint.name}</Text>
+            <Text style={styles.paintBrand}>{paint.brand}</Text>
+            <View style={styles.badges}>
+              <View style={[styles.typeBadge, { backgroundColor: getTypeColor(paint.paint_type) }]}>
+                <Text style={styles.typeText}>{paint.paint_type}</Text>
+              </View>
+              {item.status === 'owned' && (
+                <Ionicons name="checkmark-circle" size={16} color="#4CAF50" />
+              )}
+              {item.status === 'wishlist' && (
+                <Ionicons name="heart" size={16} color="#E91E63" />
+              )}
+            </View>
+          </View>
+          
+          {/* Quantity Badge */}
+          <TouchableOpacity 
+            style={styles.quantityBadge}
+            onPress={() => openQuantityModal(item)}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.quantityText}>x{item.quantity || 1}</Text>
+            <Ionicons name="pencil" size={12} color="#999" />
+          </TouchableOpacity>
         </TouchableOpacity>
         
-        <TouchableOpacity 
-          style={[styles.actionBtn, item.status === 'wishlist' ? styles.actionBtnActive : null]}
-          onPress={() => item.status !== 'wishlist' && handleToggleStatus(item)}
-          activeOpacity={0.7}
-        >
-          <Ionicons 
-            name={item.status === 'wishlist' ? 'heart' : 'heart-outline'} 
-            size={20} 
-            color={item.status === 'wishlist' ? '#E91E63' : '#666'} 
-          />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.actionBtn}
-          onPress={() => handleRemove(item)}
-          activeOpacity={0.7}
-        >
-          <Ionicons name="trash-outline" size={20} color="#EF4444" />
-        </TouchableOpacity>
+        {/* Action Buttons Row */}
+        <View style={styles.quickActions}>
+          <TouchableOpacity 
+            style={[styles.actionBtn, item.status === 'owned' && styles.actionBtnActive]}
+            onPress={() => handleToggleStatus(item, 'owned')}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name={item.status === 'owned' ? 'checkmark-circle' : 'checkmark-circle-outline'} 
+              size={22} 
+              color={item.status === 'owned' ? '#4CAF50' : '#666'} 
+            />
+            <Text style={[styles.actionLabel, item.status === 'owned' && styles.actionLabelActive]}>
+              Owned
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.actionBtn, item.status === 'wishlist' && styles.actionBtnActive]}
+            onPress={() => handleToggleStatus(item, 'wishlist')}
+            activeOpacity={0.7}
+          >
+            <Ionicons 
+              name={item.status === 'wishlist' ? 'heart' : 'heart-outline'} 
+              size={22} 
+              color={item.status === 'wishlist' ? '#E91E63' : '#666'} 
+            />
+            <Text style={[styles.actionLabel, item.status === 'wishlist' && { color: '#E91E63' }]}>
+              Wishlist
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.deleteBtn}
+            onPress={() => handleDelete(item)}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="trash" size={22} color="#EF4444" />
+            <Text style={styles.deleteBtnLabel}>Remove</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
+
+  const getTypeColor = (type: string) => {
+    const colors: Record<string, string> = {
+      base: '#4CAF50',
+      layer: '#2196F3',
+      shade: '#9C27B0',
+      wash: '#9C27B0',
+      contrast: '#FF9800',
+      dry: '#795548',
+      technical: '#607D8B',
+      air: '#00BCD4',
+      metallic: '#FFD700',
+      speedpaint: '#E91E63',
+    };
+    return colors[type?.toLowerCase()] || '#757575';
+  };
 
   if (loading && collection.length === 0) {
     return (
@@ -267,7 +358,7 @@ export default function CollectionTab() {
 
   return (
     <View style={styles.container}>
-      {/* Header with filters and sync button */}
+      {/* Header */}
       <View style={styles.headerContainer}>
         <View style={styles.filterContainer}>
           <FilterButton value="all" label="All" />
@@ -290,11 +381,6 @@ export default function CollectionTab() {
             <Text style={styles.syncBtnText}>
               {syncing || isSyncing ? 'Syncing...' : 'Sync'}
             </Text>
-            {pendingActions > 0 && (
-              <View style={styles.pendingBadge}>
-                <Text style={styles.pendingBadgeText}>{pendingActions}</Text>
-              </View>
-            )}
           </TouchableOpacity>
           
           <Text style={styles.countText}>{collection.length} paints</Text>
@@ -338,12 +424,6 @@ export default function CollectionTab() {
               {syncing ? 'Syncing...' : 'Sync Collection'}
             </Text>
           </TouchableOpacity>
-          
-          {!isOnline && (
-            <Text style={styles.offlineNote}>
-              Connect to internet to sync your collection
-            </Text>
-          )}
         </View>
       ) : (
         <FlatList
@@ -357,6 +437,63 @@ export default function CollectionTab() {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       )}
+
+      {/* Quantity Modal */}
+      <Modal
+        visible={quantityModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setQuantityModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Update Quantity</Text>
+            <Text style={styles.modalSubtitle}>
+              {selectedItem?.paint?.name || 'Paint'}
+            </Text>
+            
+            <View style={styles.quantityInputRow}>
+              <TouchableOpacity 
+                style={styles.quantityBtn}
+                onPress={() => setQuantityInput(String(Math.max(1, parseInt(quantityInput) - 1)))}
+              >
+                <Ionicons name="remove" size={24} color="#FFF" />
+              </TouchableOpacity>
+              
+              <TextInput
+                style={styles.quantityInputField}
+                value={quantityInput}
+                onChangeText={setQuantityInput}
+                keyboardType="number-pad"
+                selectTextOnFocus
+              />
+              
+              <TouchableOpacity 
+                style={styles.quantityBtn}
+                onPress={() => setQuantityInput(String(parseInt(quantityInput) + 1))}
+              >
+                <Ionicons name="add" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.modalActions}>
+              <TouchableOpacity 
+                style={styles.modalCancelBtn}
+                onPress={() => setQuantityModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.modalSaveBtn}
+                onPress={handleUpdateQuantity}
+              >
+                <Text style={styles.modalSaveText}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -435,20 +572,6 @@ const styles = StyleSheet.create({
     color: '#666',
     fontSize: 13,
   },
-  pendingBadge: {
-    backgroundColor: '#EF4444',
-    borderRadius: 10,
-    minWidth: 20,
-    height: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 4,
-  },
-  pendingBadgeText: {
-    color: '#FFF',
-    fontSize: 11,
-    fontWeight: 'bold',
-  },
   offlineChip: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -488,33 +611,114 @@ const styles = StyleSheet.create({
   separator: {
     height: 12,
   },
-  paintItemContainer: {
+  paintCard: {
     backgroundColor: '#1A1A1A',
     borderRadius: 12,
     overflow: 'hidden',
   },
-  paintItem: {
-    // Let PaintCard handle its own styling
+  paintInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+  },
+  colorSwatch: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 12,
+  },
+  whiteSwatchBorder: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderWidth: 1,
+    borderColor: '#333',
+    borderRadius: 8,
+  },
+  paintDetails: {
+    flex: 1,
+  },
+  paintName: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  paintBrand: {
+    color: '#999',
+    fontSize: 13,
+    marginTop: 2,
+  },
+  badges: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    gap: 8,
+  },
+  typeBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 10,
+  },
+  typeText: {
+    color: '#FFF',
+    fontSize: 11,
+    fontWeight: '600',
+    textTransform: 'capitalize',
+  },
+  quantityBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2A2A2A',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
+  },
+  quantityText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '600',
   },
   quickActions: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    gap: 8,
     borderTopWidth: 1,
     borderTopColor: '#2A2A2A',
   },
   actionBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#2A2A2A',
-    justifyContent: 'center',
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    gap: 6,
   },
   actionBtnActive: {
-    backgroundColor: '#3A3A3A',
+    backgroundColor: '#2A2A2A',
+  },
+  actionLabel: {
+    color: '#666',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  actionLabelActive: {
+    color: '#4CAF50',
+  },
+  deleteBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    gap: 6,
+    borderLeftWidth: 1,
+    borderLeftColor: '#2A2A2A',
+  },
+  deleteBtnLabel: {
+    color: '#EF4444',
+    fontSize: 13,
+    fontWeight: '500',
   },
   emptyContainer: {
     flex: 1,
@@ -549,10 +753,86 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  offlineNote: {
-    color: '#EF4444',
-    fontSize: 12,
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalContent: {
+    backgroundColor: '#1E1E1E',
+    borderRadius: 16,
+    padding: 24,
+    width: '100%',
+    maxWidth: 320,
+  },
+  modalTitle: {
+    color: '#FFF',
+    fontSize: 20,
+    fontWeight: '600',
     textAlign: 'center',
-    marginTop: 16,
+  },
+  modalSubtitle: {
+    color: '#999',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 4,
+    marginBottom: 24,
+  },
+  quantityInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  quantityBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#6366F1',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quantityInputField: {
+    backgroundColor: '#2A2A2A',
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FFF',
+    textAlign: 'center',
+    minWidth: 80,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    marginTop: 24,
+    gap: 12,
+  },
+  modalCancelBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#2A2A2A',
+    alignItems: 'center',
+  },
+  modalCancelText: {
+    color: '#999',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalSaveBtn: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    backgroundColor: '#6366F1',
+    alignItems: 'center',
+  },
+  modalSaveText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
